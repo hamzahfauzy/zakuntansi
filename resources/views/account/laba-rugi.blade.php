@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title',config('app.name', 'Laravel').' - Neraca ('.$book->name.')')
+@section('title',config('app.name', 'Laravel').' - Laba Rugi ('.$book->name.')')
 
 @section('template_title')
     Akun ({{$book->name}})
