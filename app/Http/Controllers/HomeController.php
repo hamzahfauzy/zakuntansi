@@ -55,7 +55,7 @@ class HomeController extends Controller
                 'phone_number' => $request->phone_number,
                 'address' => $request->address,
                 'postal_code' => $request->postal_code,
-                'logo' => $request->logo,
+                'logo' => $logo,
             ]);
 
             User::create([
