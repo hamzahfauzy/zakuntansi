@@ -56,8 +56,9 @@ class AccountController extends Controller
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
         $book_id = $this->book_id();
-        $all_master_accounts = RefAccount::get();
         // Account::truncate();
+        $all_current_accounts = Account::where('book_id',$this->book_id())->get('id');
+        $all_master_accounts = RefAccount::whereNotIn('id',$all_current_accounts)->get();
         foreach($all_master_accounts as $account)
         {
             Account::create([
