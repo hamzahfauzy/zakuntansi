@@ -25,8 +25,8 @@ class TransactionController extends Controller
 
     public function index()
     {
-        $accounts = Account::where('book_id',$this->book_id())->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')->orderBy('ref_accounts.account_code')->select('accounts.*',DB::raw("CONCAT(ref_accounts.account_code,' - ',ref_accounts.name) AS ref_account_name"))->pluck('ref_account_name','id');
-        $transactions = Transaction::where('account_id',$id)->paginate();
+        $accounts = Account::where('book_id',$this->book_id())->get('id');
+        $transactions = Transaction::whereIn('account_id',$accounts)->paginate();
 
         return view('transaction.index', compact('transactions'))
             ->with('i', (request()->input('page', 1) - 1) * $transactions->perPage());
