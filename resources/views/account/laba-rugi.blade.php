@@ -67,7 +67,7 @@
                                     @endforeach
                                     <tr>
                                         <td colspan="6" style="text-align: right;"><b>Laba Rugi</b></td>
-                                        <td>{{number_format($all_db-$all_cr)}}</td>
+                                        <td>{{number_format($all_cr-$all_db)}}</td>
                                     </tr>
                                 </tbody>
                             </table>
