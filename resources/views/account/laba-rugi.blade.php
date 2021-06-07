@@ -19,7 +19,7 @@
                             </span>
 
                              <div class="float-right">
-                                <a href="" class="btn btn-success btn-sm" onclick="if(confirm('Apakah anda yakin akan mengimport seluruh data akun?')){return true}else{return false}">
+                                <a href="{{route('accounts.cetak-laba-rugi')}}" class="btn btn-success btn-sm" target="_blank">
                                     {{ __('Cetak') }}
                                 </a>
                               </div>

@@ -18,11 +18,13 @@
                                 {{ __('Buku Besar') }}
                             </span>
 
+                            @if($id)
                             <div class="float-right">
-                                <a href="{{ route('transactions.create') }}" class="btn btn-success btn-sm">
+                                <a href="{{ route('transactions.cetak-buku',$id) }}" target="_blank" class="btn btn-success btn-sm">
                                     {{ __('Cetak') }}
                                 </a>
                             </div>
+                            @endif
                         </div>
                     </div>
 
@@ -38,7 +40,7 @@
                                         
 										<th>Tanggal</th>
 										{{-- <th>Akun</th> --}}
-										<th>Ref.</th>
+										{{-- <th>Ref.</th> --}}
 										<th>Deskripsi</th>
 										<th>Debit</th>
 										<th>Kredit</th>
@@ -51,7 +53,7 @@
                                             <td></td>
                                             <td></td>
                                             {{-- <td></td> --}}
-                                            <td></td>
+                                            {{-- <td></td> --}}
                                             <td>Saldo Awal</td>
                                             <td>{{$selected_account->debt_format}}</td>
                                             <td>{{$selected_account->credit_format}}</td>
@@ -64,7 +66,7 @@
                                             
 											<td>{{ $transaction->date->format('d-m-Y') }}</td>
 											{{-- <td>{{ $transaction->account->refAccount->account_code }} - {{ $transaction->account->refAccount->name }}</td> --}}
-											<td>{{ $transaction->reference }}</td>
+											{{-- <td>{{ $transaction->reference }}</td> --}}
 											<td>{{ $transaction->description }}</td>
 											<td>{{ $transaction->debt_format }}</td>
 											<td>{{ $transaction->credit_format }}</td>

@@ -30,9 +30,14 @@ Route::middleware('installed')->group(function(){
 
         Route::middleware('book_session')->group(function(){
             Route::get('accounts/import',[App\Http\Controllers\AccountController::class,'import'])->name('accounts.import');
+            Route::get('accounts/cetak-neraca',[App\Http\Controllers\AccountController::class,'cetakNeraca'])->name('accounts.cetak-neraca');
+            Route::get('accounts/cetak-laba-rugi',[App\Http\Controllers\AccountController::class,'cetakLabaRugi'])->name('accounts.cetak-laba-rugi');
             Route::resource('accounts',App\Http\Controllers\AccountController::class);
 
+            Route::get('transactions/cetak-jurnal',[App\Http\Controllers\TransactionController::class,'cetakJurnal'])->name('transactions.cetak-jurnal');
+            Route::get('transactions/cetak-buku/{id}',[App\Http\Controllers\TransactionController::class,'cetakBuku'])->name('transactions.cetak-buku');
             Route::resource('transactions',App\Http\Controllers\TransactionController::class);
+            Route::delete('transactions/{account_id}/delete',[App\Http\Controllers\TransactionController::class,'delete'])->name('transactions.delete');
 
             Route::get('buku-besar',[App\Http\Controllers\TransactionController::class,'bukuBesar'])->name('buku-besar');
             Route::get('neraca',[App\Http\Controllers\AccountController::class,'neraca'])->name('neraca');

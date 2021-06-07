@@ -46,6 +46,14 @@ class TransactionController extends Controller
         return view('transaction.buku-besar', compact('transactions','accounts','id','selected_account'));
     }
 
+    public function cetakBuku($id)
+    {
+        $accounts = Account::where('book_id',$this->book_id())->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')->orderBy('ref_accounts.account_code')->select('accounts.*',DB::raw("CONCAT(ref_accounts.account_code,' - ',ref_accounts.name) AS ref_account_name"))->pluck('ref_account_name','id');
+        $transactions = Transaction::where('account_id',$id)->paginate();
+        $selected_account = Account::find($id);
+        return view('transaction.cetak-buku', compact('transactions','accounts','id','selected_account'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -193,9 +201,25 @@ class TransactionController extends Controller
             ->with('success', 'Transaction deleted successfully');
     }
 
-    // additional action
-    function panel()
+    public function delete(Transaction $transaction)
     {
+        $transaction->delete();
 
+        return redirect()->route('transactions.index')
+            ->with('success', 'Transaction deleted successfully');
+    }
+
+    public function cetakJurnal()
+    {
+        $accounts = Account::where('book_id',$this->book_id())
+            ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
+            ->orderBy('ref_accounts.account_code','asc')
+            ->select('accounts.*')
+            ->get()->pluck('id')->toArray();
+        $transactions = Transaction::whereIn('account_id',$accounts)->groupby('account_id')->orderByRaw('FIELD(account_id,'.implode(",",$accounts).')')->get();
+        $book = session('book');
+
+        return view('transaction.cetak-jurnal', compact('transactions','book'))
+            ->with('i', 0);
     }
 }

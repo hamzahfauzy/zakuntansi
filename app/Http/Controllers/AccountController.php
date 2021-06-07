@@ -42,6 +42,16 @@ class AccountController extends Controller
         return view('account.neraca', compact('accounts','book'));
     }
 
+    public function cetakNeraca()
+    {
+        $book = session('book');
+        $accounts = Account::where('book_id',$book->id)->whereHas('refAccount',function($q){
+            $q->where('pos','Nrc');
+        })->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')->orderBy('ref_accounts.account_code')->select('accounts.*')->get();
+
+        return view('account.cetak-neraca', compact('accounts','book'));
+    }
+
     public function labaRugi()
     {
         $book = session('book');
@@ -50,6 +60,16 @@ class AccountController extends Controller
         })->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')->orderBy('ref_accounts.account_code')->select('accounts.*')->get();
 
         return view('account.laba-rugi', compact('accounts','book'));
+    }
+
+    public function cetakLabaRugi()
+    {
+        $book = session('book');
+        $accounts = Account::where('book_id',$book->id)->whereHas('refAccount',function($q){
+            $q->where('pos','Lr');
+        })->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')->orderBy('ref_accounts.account_code')->select('accounts.*')->get();
+
+        return view('account.cetak-laba-rugi', compact('accounts','book'));
     }
 
     public function import()
