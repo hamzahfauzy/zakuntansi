@@ -16,7 +16,14 @@
                         <span class="card-title">Update Transaction</span>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('transactions.update', $transaction->id) }}"  role="form" enctype="multipart/form-data">
+                        @if ($errors->any())
+                            <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{$error}}</li>
+                            @endforeach
+                            </ul>
+                        @endif
+                        <form method="POST" action="{{ route('transactions.update', $transaction->account_id) }}"  role="form" enctype="multipart/form-data">
                             {{ method_field('PATCH') }}
                             @csrf
 

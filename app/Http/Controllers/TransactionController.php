@@ -25,11 +25,16 @@ class TransactionController extends Controller
 
     public function index()
     {
-        $accounts = Account::where('book_id',$this->book_id())->get('id');
-        $transactions = Transaction::whereIn('account_id',$accounts)->paginate();
+        $accounts = Account::where('book_id',$this->book_id())
+            ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
+            ->orderBy('ref_accounts.account_code','asc')
+            ->select('accounts.*')
+            ->get()->pluck('id')->toArray();
+        $transactions = Transaction::whereIn('account_id',$accounts)->groupby('account_id')->orderByRaw('FIELD(account_id,'.implode(",",$accounts).')')->get();
+        // $transactions = Transaction::whereIn('account_id',$accounts)->orderby('account_id')->paginate();
 
         return view('transaction.index', compact('transactions'))
-            ->with('i', (request()->input('page', 1) - 1) * $transactions->perPage());
+            ->with('i', 0); //(request()->input('page', 1) - 1) * $transactions->perPage());
     }
 
     public function bukuBesar()
@@ -61,6 +66,34 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request->all();
+        $request->validate([
+            'account_id' => 'required',
+            'tipe.*'     => 'required',
+            'date.*'     => 'required',
+            'description.*' => 'required',
+            'nominal.*'  => 'required',
+        ]);
+
+        foreach($request->transaction_id as $key => $transaction_id)
+        {
+            Transaction::create([
+                'account_id' => $request->account_id,
+                'description' => $request->description[$key],
+                'date' => $request->date[$key],
+                'debt' => $request->tipe[$key] == 'Debt' ? $request->nominal[$key] : 0,
+                'credit' => $request->tipe[$key] == 'Credit' ? $request->nominal[$key] : 0,
+            ]);
+        }
+
+        // $transaction = Transaction::create($request->all());
+
+        return redirect()->route('transactions.index')
+            ->with('success', 'Transaction created successfully.');
+    }
+
+    public function storeOld(Request $request)
+    {
         request()->validate(Transaction::$rules);
 
         $transaction = Transaction::create($request->all());
@@ -90,10 +123,11 @@ class TransactionController extends Controller
      */
     public function edit($id)
     {
-        $transaction = Transaction::find($id);
+        $transaction = Transaction::where('account_id',$id)->firstOrFail();
+        $transactions = Transaction::where('account_id',$id)->get();
         $accounts = Account::where('book_id',$this->book_id())->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')->orderBy('ref_accounts.account_code')->select('accounts.*',DB::raw("CONCAT(ref_accounts.account_code,' - ',ref_accounts.name) AS ref_account_name"))->pluck('ref_account_name','id');
 
-        return view('transaction.edit', compact('transaction','accounts'));
+        return view('transaction.edit', compact('transaction','transactions','accounts'));
     }
 
     /**
@@ -103,11 +137,44 @@ class TransactionController extends Controller
      * @param  Transaction $transaction
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Transaction $transaction)
+    public function update(Request $request, $id)
     {
-        request()->validate(Transaction::$rules);
-
-        $transaction->update($request->all());
+        $request->validate([
+            'account_id' => 'required',
+            'tipe.*'     => 'required',
+            'date.*'     => 'required',
+            'description.*' => 'required',
+            'nominal.*'  => 'required',
+        ]);
+        $transactions = Transaction::where('account_id',$id)->get()->pluck('id');
+        foreach($transactions as $t)
+        {
+            if(!in_array($t, $request->transaction_id))
+                Transaction::find($t)->delete();
+        }
+        foreach($request->transaction_id as $key => $value)
+        {
+            if($value == 'undefined')
+            {
+                Transaction::create([
+                    'account_id' => $id,
+                    'description' => $request->description[$key],
+                    'date' => $request->date[$key],
+                    'debt' => $request->tipe[$key] == 'Debt' ? $request->nominal[$key] : 0,
+                    'credit' => $request->tipe[$key] == 'Credit' ? $request->nominal[$key] : 0,
+                ]);
+            }
+            else
+            {
+                $transaction = Transaction::find($value);
+                $transaction->update([
+                    'description' => $request->description[$key],
+                    'date' => $request->date[$key],
+                    'debt' => $request->tipe[$key] == 'Debt' ? $request->nominal[$key] : 0,
+                    'credit' => $request->tipe[$key] == 'Credit' ? $request->nominal[$key] : 0,
+                ]);
+            }
+        }
 
         return redirect()->route('transactions.index')
             ->with('success', 'Transaction updated successfully');
@@ -124,5 +191,11 @@ class TransactionController extends Controller
 
         return redirect()->route('transactions.index')
             ->with('success', 'Transaction deleted successfully');
+    }
+
+    // additional action
+    function panel()
+    {
+
     }
 }

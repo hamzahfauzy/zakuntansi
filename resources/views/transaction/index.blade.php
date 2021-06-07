@@ -20,7 +20,7 @@
 
                             <div class="float-right">
                                 <a href="{{ route('transactions.create') }}" class="btn btn-primary btn-sm">
-                                  {{ __('Tambah Data') }}
+                                  {{ __('Input Jurnal') }}
                                 </a>
                                 <a href="{{ route('transactions.create') }}" class="btn btn-success btn-sm">
                                     {{ __('Cetak') }}
@@ -39,14 +39,15 @@
                             <table class="table table-striped table-hover">
                                 <thead class="thead">
                                     <tr>
-                                        <th>No</th>
+                                        <th>#</th>
                                         
 										<th>Tanggal</th>
 										<th>Akun</th>
-										<th>Ref.</th>
-										<th>Deskripsi</th>
+										<!-- <th>Ref.</th> -->
+										<!-- <th>Deskripsi</th> -->
 										<th>Debit</th>
 										<th>Kredit</th>
+										<th>Balance</th>
 
                                         <th></th>
                                     </tr>
@@ -58,15 +59,16 @@
                                             
 											<td>{{ $transaction->date->format('d-m-Y') }}</td>
 											<td>{{ $transaction->account->refAccount->account_code }} - {{ $transaction->account->refAccount->name }}</td>
-											<td>{{ $transaction->reference }}</td>
-											<td>{{ $transaction->description }}</td>
-											<td>{{ $transaction->debt_format }}</td>
-											<td>{{ $transaction->credit_format }}</td>
+											<!-- <td>{{ $transaction->reference }}</td> -->
+											<!-- <td>{{ $transaction->description }}</td> -->
+											<td>{{ $transaction->account->t_debt_format }}</td>
+											<td>{{ $transaction->account->t_credit_format }}</td>
+											<td>{{ $transaction->account->t_balance_format }}</td>
 
                                             <td>
-                                                <form action="{{ route('transactions.destroy',$transaction->id) }}" method="POST">
-                                                    {{-- <a class="btn btn-sm btn-primary " href="{{ route('transactions.show',$transaction->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
-                                                    <a class="btn btn-sm btn-success" href="{{ route('transactions.edit',$transaction->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
+                                                <form action="{{ route('transactions.destroy',$transaction->account_id) }}" method="POST">
+                                                    {{-- <a class="btn btn-sm btn-primary " href="{{ route('transactions.show',$transaction->account_id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
+                                                    <a class="btn btn-sm btn-success" href="{{ route('transactions.edit',$transaction->account_id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Hapus</button>
@@ -79,7 +81,6 @@
                         </div>
                     </div>
                 </div>
-                {!! $transactions->links() !!}
             </div>
         </div>
     </div>

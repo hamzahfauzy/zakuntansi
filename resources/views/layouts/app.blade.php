@@ -19,6 +19,11 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{asset('select2/css/select2.min.css')}}" rel="stylesheet" />
+    <style>
+    .select2 {
+        width: 100%!important;
+    }
+    </style>
 </head>
 <body>
     <div id="app">

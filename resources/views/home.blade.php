@@ -31,7 +31,7 @@
 
                     <div class="row image-grid">
                         @foreach($books as $book)
-                        <div class="col-sm-4 col-md-4">
+                        <div class="col-sm-4 col-md-4 mb-3">
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <a href="{{ route('books.show',$book->id) }}">
