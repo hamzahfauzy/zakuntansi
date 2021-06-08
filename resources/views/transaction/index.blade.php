@@ -53,7 +53,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($transactions as $transaction)
+                                    @forelse ($transactions as $transaction)
                                         <tr>
                                             <td><button class="btn btn-sm btn-secondary" data-toggle="collapse" data-target="#child-data-{{++$i}}">o</button></td>
                                             
@@ -75,7 +75,7 @@
                                         </tr>
                                         @foreach($transaction->account->transactions as $t)
                                         <tr id="child-data-{{$i}}" class="">
-                                            <td></td>
+                                            <td><small>{{$t->date->format('d/m/Y')}}</small></td>
 											<td><span class="ml-3">{{ $t->description }}</span></td>
 											<td>{{ $t->debt_format }}</td>
 											<td>{{ $t->credit_format }}</td>
@@ -90,7 +90,11 @@
                                             </td>
                                         </tr>
                                         @endforeach
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="6"><i>Tidak ada Data</i></td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

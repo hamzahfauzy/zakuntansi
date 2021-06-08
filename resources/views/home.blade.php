@@ -33,18 +33,18 @@
                         @foreach($books as $book)
                         <div class="col-sm-4 col-md-4 mb-3">
                             <div class="panel panel-default">
-                                <div class="panel-body">
+                                <div class="panel-body text-center">
                                     <a href="{{ route('books.show',$book->id) }}">
-                                        <img alt="" class="img-thumbnail" src="{{asset('images/books.jpg')}}">
+                                        <img alt="" class="img-thumbnail" src="{{asset('images/books.jpg')}}" width="150px">
                                     </a>
                                 </div>
                                 <div class="panel-footer">
                                     <center>
-                                    <span class="badge badge-success">{{$book->status}}</span><br>
+                                    <!-- <span class="badge badge-success">{{$book->status}}</span><br> -->
                                     <b>{{$book->name}}</b><br>
                                     {{$book->date_from->format('d/m/Y')}} - {{$book->date_to->format('d/m/Y')}}<br>
                                     <form action="{{ route('books.destroy',$book->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus buku beserta seluruh datanya?')){return true}else{return false}">
-                                        <a class="btn btn-sm btn-primary " href="{{ route('books.show',$book->id) }}"><i class="fa fa-fw fa-eye"></i> Lihat</a>
+                                        <a class="btn btn-sm btn-primary " href="{{ route('books.show',$book->id) }}"><i class="fa fa-fw fa-eye"></i> Buka</a>
                                         <a class="btn btn-sm btn-success" href="{{ route('books.edit',$book->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                         @csrf
                                         @method('DELETE')

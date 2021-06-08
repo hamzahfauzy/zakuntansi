@@ -1,0 +1,22 @@
+{
+    "Installation" : "Instalasi",
+    "Company Name" : "Nama Perusahaan",
+    "Phone Number" : "No. Telepon/Handphone",
+    "Address"      : "Alamat",
+    "Company Email": "Email Perusahaan",
+    "Postal Code"  : "Kode Pos",
+    "Username"     : "Nama Pengguna",
+    "Password"     : "Kata Sandi",
+
+    "Name"         : "Nama",
+    "Date From"    : "Tanggal Awal",
+    "Date To"      : "Tanggal Akhir",
+
+    "Book"         : "Buku",
+    "Create New"   : "Buat Baru",
+
+    "debt"         : "Debit",
+    "credit"       : "Kredit",
+
+    "Create Account" : "Buat Akun"
+}

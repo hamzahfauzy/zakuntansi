@@ -1,24 +1,39 @@
 <div class="box box-info padding-1">
     <div class="box-body">
-        
+        <input type="hidden" name="book_id" value="{{$account->book_id}}">
         <div class="form-group">
-            {{ Form::label('book_id') }}
-            {{ Form::text('book_id', $account->book_id, ['class' => 'form-control' . ($errors->has('book_id') ? ' is-invalid' : ''), 'placeholder' => 'Book Id']) }}
-            {!! $errors->first('book_id', '<div class="invalid-feedback">:message</p>') !!}
+            {{ Form::label('Akun Parent') }}
+            {{ Form::select('parent_id', $all_accounts, '', ['class' => 'form-control select2' . ($errors->has('pos') ? ' is-invalid' : ''), 'placeholder' => '- Pilih -']) }}
+            {!! $errors->first('pos', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('ref_account_id') }}
-            {{ Form::text('ref_account_id', $account->ref_account_id, ['class' => 'form-control' . ($errors->has('ref_account_id') ? ' is-invalid' : ''), 'placeholder' => 'Ref Account Id']) }}
-            {!! $errors->first('ref_account_id', '<div class="invalid-feedback">:message</p>') !!}
+            {{ Form::label('Kode Akun') }}
+            {{ Form::text('account_code', '', ['class' => 'form-control' . ($errors->has('account_code') ? ' is-invalid' : ''), 'placeholder' => 'Account Code']) }}
+            {!! $errors->first('account_code', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('debt') }}
-            {{ Form::text('debt', $account->debt, ['class' => 'form-control' . ($errors->has('debt') ? ' is-invalid' : ''), 'placeholder' => 'Debt']) }}
+            {{ Form::label('Nama') }}
+            {{ Form::text('name', '', ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'placeholder' => 'Name']) }}
+            {!! $errors->first('name', '<div class="invalid-feedback">:message</p>') !!}
+        </div>
+        <div class="form-group">
+            {{ Form::label('POS') }}
+            {{ Form::select('pos', ['Nrc'=>'Nrc','Lr'=>'Lr'] ,'', ['required','class' => 'form-control' . ($errors->has('pos') ? ' is-invalid' : ''), 'placeholder' => '- Pilih -']) }}
+            {!! $errors->first('pos', '<div class="invalid-feedback">:message</p>') !!}
+        </div>
+        <div class="form-group">
+            {{ Form::label('Saldo Normal') }}
+            {{ Form::select('normal_balance', ['Db'=>'Db','Cr'=>'Cr'] ,'', ['required','class' => 'form-control' . ($errors->has('normal_balance') ? ' is-invalid' : ''), 'placeholder' => '- Pilih -']) }}
+            {!! $errors->first('normal_balance', '<div class="invalid-feedback">:message</p>') !!}
+        </div>
+        <div class="form-group">
+            {{ Form::label(__('debt')) }}
+            {{ Form::text('debt', $account->debt??0, ['class' => 'form-control' . ($errors->has('debt') ? ' is-invalid' : ''), 'placeholder' => 'Debt']) }}
             {!! $errors->first('debt', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('credit') }}
-            {{ Form::text('credit', $account->credit, ['class' => 'form-control' . ($errors->has('credit') ? ' is-invalid' : ''), 'placeholder' => 'Credit']) }}
+            {{ Form::label(__('credit')) }}
+            {{ Form::text('credit', $account->credit??0, ['class' => 'form-control' . ($errors->has('credit') ? ' is-invalid' : ''), 'placeholder' => 'Credit']) }}
             {!! $errors->first('credit', '<div class="invalid-feedback">:message</p>') !!}
         </div>
 

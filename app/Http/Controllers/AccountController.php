@@ -101,7 +101,9 @@ class AccountController extends Controller
     {
         $account = new Account();
         $account->book_id = $this->book_id();
-        return view('account.create', compact('account'));
+
+        $all_accounts = RefAccount::select(DB::Raw('CONCAT(account_code," - ",name) as account_name'),'id')->orderby('account_code')->get()->pluck('account_name','id');
+        return view('account.create', compact('account','all_accounts'));
     }
 
     /**
@@ -112,9 +114,38 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate(Account::$rules);
+        $request->validate([
+            'account_code' => 'required',
+            'name'         => 'required',
+            'pos'          => 'required',
+            'normal_balance' => 'required',
+            'debt'         => 'required',
+            'credit'       => 'required'
+        ]);
 
-        $account = Account::create($request->all());
+        $data = $request->all();
+        unset($data['account_code']);
+        unset($data['name']);
+        unset($data['pos']);
+        unset($data['normal_balance']);
+
+        $ref_account = RefAccount::where('account_code',$request->account_code);
+        if($ref_account->exists())
+            $ref_account = $ref_account->first();
+        else
+        {
+            $create_data = [
+                'account_code' => $request->account_code,
+                'name'         => $request->name,
+                'pos'          => $request->pos,
+                'normal_balance' => $request->normal_balance,
+            ];
+            if($request->parent_id) $create_data['parent_id'] = $request->parent_id;
+            $ref_account = RefAccount::create($create_data);
+        }
+        $data['ref_account_id'] = $ref_account->id;
+
+        $account = Account::create($data);
 
         return redirect()->route('accounts.index')
             ->with('success', 'Akun berhasil ditambahkan.');

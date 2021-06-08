@@ -201,9 +201,9 @@ class TransactionController extends Controller
             ->with('success', 'Transaction deleted successfully');
     }
 
-    public function delete(Transaction $transaction)
+    public function delete($account_id)
     {
-        $transaction->delete();
+        Transaction::where('account_id',$account_id)->delete();
 
         return redirect()->route('transactions.index')
             ->with('success', 'Transaction deleted successfully');

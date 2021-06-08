@@ -24,8 +24,8 @@ Route::middleware('installed')->group(function(){
         Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
         Route::resource('books',App\Http\Controllers\BookController::class);
-        Route::resource('ref-accounts',App\Http\Controllers\RefAccountController::class);
         Route::match(['get','post'],'ref-accounts/import',[App\Http\Controllers\RefAccountController::class,'import'])->name('ref-accounts.import');
+        Route::resource('ref-accounts',App\Http\Controllers\RefAccountController::class);
         Route::get('ref-accounts/download',[App\Http\Controllers\RefAccountController::class,'download'])->name('ref-accounts.download');
 
         Route::middleware('book_session')->group(function(){

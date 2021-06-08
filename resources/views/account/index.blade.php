@@ -19,15 +19,17 @@
                             </span>
 
                              <div class="float-right">
-                                {{-- <a href="{{ route('accounts.create') }}" class="btn btn-primary btn-sm">
+                                <a href="{{ route('accounts.create') }}" class="btn btn-primary btn-sm">
                                   {{ __('Tambah Akun') }}
-                                </a> --}}
+                                </a>
                                 <a href="{{ route('accounts.import') }}" class="btn btn-success btn-sm" onclick="if(confirm('Apakah anda yakin akan mengimport seluruh data akun?')){return true}else{return false}">
                                     {{ __('Import Semua Akun') }}
                                 </a>
+                                {{--
                                 <a href="" class="btn btn-success btn-sm">
                                     {{ __('Import dari Buku') }}
                                 </a>
+                                --}}
                               </div>
                         </div>
                     </div>
@@ -102,10 +104,10 @@
                                             <td>
                                                 <form action="{{ route('accounts.destroy',$account->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $account->refAccount->account_code }} ?')){return true}else{return false}">
                                                     {{-- <a class="btn btn-sm btn-primary " href="{{ route('accounts.show',$account->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
-                                                    {{-- <a class="btn btn-sm btn-success btn-block" href="{{ route('accounts.edit',$account->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a> --}}
+                                                    <a class="btn btn-sm btn-success" href="{{ route('accounts.edit',$account->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm btn-block"><i class="fa fa-fw fa-trash"></i> Hapus</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Hapus</button>
                                                 </form>
                                             </td>
                                         </tr>

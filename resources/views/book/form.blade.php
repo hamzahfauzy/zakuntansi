@@ -2,17 +2,17 @@
     <div class="box-body">
         
         <div class="form-group">
-            {{ Form::label('name') }}
+            {{ Form::label(__('Name')) }}
             {{ Form::text('name', $book->name, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'placeholder' => 'Name']) }}
             {!! $errors->first('name', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('date_from') }}
+            {{ Form::label(__('Date From')) }}
             {{ Form::date('date_from', $book->date_from, ['class' => 'form-control' . ($errors->has('date_from') ? ' is-invalid' : ''), 'placeholder' => 'Date From']) }}
             {!! $errors->first('date_from', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('date_to') }}
+            {{ Form::label(__('Date To')) }}
             {{ Form::date('date_to', $book->date_to, ['class' => 'form-control' . ($errors->has('date_to') ? ' is-invalid' : ''), 'placeholder' => 'Date To']) }}
             {!! $errors->first('date_to', '<div class="invalid-feedback">:message</p>') !!}
         </div>

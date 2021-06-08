@@ -22,12 +22,14 @@
                                 <a href="{{ route('ref-accounts.create',['parent_id'=>$parent_id]) }}" class="btn btn-primary btn-sm">
                                   {{ __('Tambah Akun') }}
                                 </a>
+                                {{--
                                 <a href="{{ route('ref-accounts.import') }}" class="btn btn-success btn-sm">
                                     {{ __('Import Akun') }}
                                 </a>
                                 <a href="{{ route('ref-accounts.download') }}" class="btn btn-success btn-sm">
                                     {{ __('Download Format Import') }}
                                 </a>
+                                --}}
                               </div>
                         </div>
                     </div>
