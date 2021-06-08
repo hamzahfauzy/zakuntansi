@@ -30,7 +30,9 @@ class TransactionController extends Controller
             ->orderBy('ref_accounts.account_code','asc')
             ->select('accounts.*')
             ->get()->pluck('id')->toArray();
-        $transactions = Transaction::whereIn('account_id',$accounts)->groupby('account_id')->orderByRaw('FIELD(account_id,'.implode(",",$accounts).')')->get();
+        $transactions = [];
+        if(!empty($accounts))
+            $transactions = Transaction::whereIn('account_id',$accounts)->groupby('account_id')->orderByRaw('FIELD(account_id,'.implode(",",$accounts).')')->get();
         // $transactions = Transaction::whereIn('account_id',$accounts)->orderby('account_id')->paginate();
 
         return view('transaction.index', compact('transactions'))
