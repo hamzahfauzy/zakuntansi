@@ -17,6 +17,7 @@
 
     "debt"         : "Debit",
     "credit"       : "Kredit",
+    "balance"      : "Saldo Awal",
 
     "Create Account" : "Buat Akun"
 }

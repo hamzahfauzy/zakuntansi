@@ -17,8 +17,9 @@ class CreateAccountsTable extends Migration
             $table->id();
             $table->foreignId('book_id')->constrained()->onDelete('cascade');
             $table->foreignId('ref_account_id')->constrained()->onDelete('cascade');
-            $table->decimal('debt',15,2);
-            $table->decimal('credit',15,2);
+            // $table->decimal('debt',15,2);
+            // $table->decimal('credit',15,2);
+            $table->decimal('balance',15,2);
             $table->timestamps();
         });
     }

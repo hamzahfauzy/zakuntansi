@@ -54,9 +54,7 @@
 										<th>Akun</th>
 										<th width="150px">POS</th>
 										<th width="150px">Saldo Normal</th>
-										<th>Debit</th>
-										<th>Kredit</th>
-										{{-- <th width="120px">Saldo Awal</th> --}}
+										<th width="120px">Saldo Awal</th>
 
                                         <th>Aksi</th>
                                     </tr>
@@ -94,14 +92,17 @@
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             
-											<td>{{ $account->refAccount->account_code }} - {{ $account->refAccount->name }}</td>
+											<td>
+                                                <b>{{ $account->refAccount->account_code }} - {{ $account->refAccount->name }}</b>
+                                            </td>
 											<td>{{ $account->refAccount->pos }}</td>
 											<td>{{ $account->refAccount->normal_balance }}</td>
-											<td>{{ $account->debt_format }}</td>
-											<td>{{ $account->credit_format }}</td>
-											{{-- <td>{{ $account->balance_format }}</td> --}}
+											<td>{{ count($account->childs) ? '-' : $account->balance_format }}</td>
 
                                             <td>
+                                                @if(count($account->childs))
+                                                -
+                                                @else
                                                 <form action="{{ route('accounts.destroy',$account->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $account->refAccount->account_code }} ?')){return true}else{return false}">
                                                     {{-- <a class="btn btn-sm btn-primary " href="{{ route('accounts.show',$account->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
                                                     <a class="btn btn-sm btn-success" href="{{ route('accounts.edit',$account->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
@@ -109,8 +110,92 @@
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Hapus</button>
                                                 </form>
+                                                @endif
                                             </td>
                                         </tr>
+                                    @foreach ($account->childs as $child_1)
+                                        <tr>
+                                            <td></td>
+                                            
+											<td>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;{{ $child_1->refAccount->account_code }} - {{ $child_1->refAccount->name }}<br>
+                                            </td>
+											<td>{{ $child_1->refAccount->pos }}</td>
+											<td>{{ $child_1->refAccount->normal_balance }}</td>
+											<td>{{ count($child_1->childs) ? '-' : $child_1->balance_format }}</td>
+
+                                            <td>
+                                                @if(count($child_1->childs))
+                                                -
+                                                @else
+                                                <form action="{{ route('accounts.destroy',$child_1->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_1->refAccount->account_code }} ?')){return true}else{return false}">
+                                                    {{-- <a class="btn btn-sm btn-primary " href="{{ route('accounts.show',$child_1->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
+                                                    <a class="btn btn-sm btn-success" href="{{ route('accounts.edit',$child_1->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Hapus</button>
+                                                </form>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @foreach ($child_1->childs as $child_2)
+                                        <tr>
+                                            <td></td>
+                                            
+											<td>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                {{ $child_2->refAccount->account_code }} - {{ $child_2->refAccount->name }}<br>
+                                            </td>
+											<td>{{ $child_2->refAccount->pos }}</td>
+											<td>{{ $child_2->refAccount->normal_balance }}</td>
+											<td>{{ count($child_2->childs) ? '-' : $child_2->balance_format }}</td>
+
+                                            <td>
+                                                @if(count($child_2->childs))
+                                                -
+                                                @else
+                                                <form action="{{ route('accounts.destroy',$child_2->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_2->refAccount->account_code }} ?')){return true}else{return false}">
+                                                    {{-- <a class="btn btn-sm btn-primary " href="{{ route('accounts.show',$child_2->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
+                                                    <a class="btn btn-sm btn-success" href="{{ route('accounts.edit',$child_2->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Hapus</button>
+                                                </form>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @foreach ($child_2->childs as $child_3)
+                                        <tr>
+                                            <td></td>
+                                            
+											<td>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                {{ $child_3->refAccount->account_code }} - {{ $child_3->refAccount->name }}<br>
+                                            </td>
+											<td>{{ $child_3->refAccount->pos }}</td>
+											<td>{{ $child_3->refAccount->normal_balance }}</td>
+											<td>{{ count($child_3->childs) ? '-' : $child_3->balance_format }}</td>
+
+                                            <td>
+                                                @if(count($child_3->childs))
+                                                -
+                                                @else
+                                                <form action="{{ route('accounts.destroy',$child_3->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_3->refAccount->account_code }} ?')){return true}else{return false}">
+                                                    {{-- <a class="btn btn-sm btn-primary " href="{{ route('accounts.show',$child_3->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
+                                                    <a class="btn btn-sm btn-success" href="{{ route('accounts.edit',$child_3->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Hapus</button>
+                                                </form>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    @endforeach
+                                    @endforeach
                                     @endforeach
                                 </tbody>
                             </table>

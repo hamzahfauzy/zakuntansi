@@ -5,15 +5,15 @@
 @endsection
 
 @section('content')
-    <section class="content container">
-        <div class="">
+    <section class="container fluid">
+        <div class="row">
             <div class="col-md-12">
 
                 @includeif('partials.errors')
 
                 <div class="card card-default">
                     <div class="card-header">
-                        <span class="card-title">Update Transaction</span>
+                        <span class="card-title">Panel Update Jurnal</span>
                     </div>
                     <div class="card-body">
                         @if ($errors->any())
@@ -23,7 +23,7 @@
                             @endforeach
                             </ul>
                         @endif
-                        <form method="POST" action="{{ route('transactions.update', $transaction->account_id) }}"  role="form" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('transactions.update', $transaction->id) }}"  role="form" enctype="multipart/form-data">
                             {{ method_field('PATCH') }}
                             @csrf
 

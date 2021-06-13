@@ -27,14 +27,15 @@ class Account extends Model
     static $rules = [
 		'book_id' => 'required',
 		'ref_account_id' => 'required',
-		'debt' => 'required',
-		'credit' => 'required',
+		'balance' => 'required',
+		// 'debt' => 'required',
+		// 'credit' => 'required',
     ];
 
-    static $update_rules = [
-		'debt' => 'required',
-		'credit' => 'required',
-    ];
+    // static $update_rules = [
+	// 	'debt' => 'required',
+	// 	'credit' => 'required',
+    // ];
 
     protected $perPage = 20;
 
@@ -43,7 +44,7 @@ class Account extends Model
      *
      * @var array
      */
-    protected $fillable = ['book_id','ref_account_id','debt','credit'];
+    protected $fillable = ['book_id','ref_account_id','balance'];
 
 
     /**
@@ -60,6 +61,17 @@ class Account extends Model
     public function refAccount()
     {
         return $this->hasOne('App\Models\RefAccount', 'id', 'ref_account_id');
+    }
+
+    public function getChildsAttribute()
+    {
+        $book_id = $this->book_id;
+        $parent_childs = $this->refAccount->childs()->pluck('id');
+        $active_childs = Account::where('book_id',$book_id)->whereIn('ref_account_id',$parent_childs)->get();
+        return $active_childs;
+
+
+        // return $parent_childs;
     }
     
     /**
@@ -90,10 +102,16 @@ class Account extends Model
         return number_format($this->t_credit);
     }
 
-    public function getTBalanceAttribute()
+    public function getTNetAttribute()
     {
         $balance = $this->refAccount->normal_balance == 'Db' ? $this->t_debt - $this->t_credit : $this->t_credit - $this->t_debt;
         return $balance;
+    }
+
+    public function getTBalanceAttribute()
+    {
+        $balance = $this->refAccount->normal_balance == 'Db' ? $this->t_debt - $this->t_credit : $this->t_credit - $this->t_debt;
+        return $this->balance + $balance;
     }
 
     public function getTBalanceFormatAttribute()
@@ -102,10 +120,16 @@ class Account extends Model
         return $balance >= 0 ? number_format($balance) : '('.number_format(abs($balance)).')';
     }
 
-    public function getBalanceAttribute()
+    // public function getBalanceAttribute()
+    // {
+    //     $balance = $this->refAccount->normal_balance == 'Db' ? $this->debt - $this->credit : $this->credit - $this->debt;
+    //     return $balance;
+    // }
+
+    public function getTNetFormatAttribute()
     {
-        $balance = $this->refAccount->normal_balance == 'Db' ? $this->debt - $this->credit : $this->credit - $this->debt;
-        return $balance;
+        $balance = $this->t_net;
+        return $balance >= 0 ? number_format($balance) : '('.number_format(abs($balance)).')';
     }
 
     public function getBalanceFormatAttribute()

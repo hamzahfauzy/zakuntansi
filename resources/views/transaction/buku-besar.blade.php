@@ -18,59 +18,51 @@
                                 {{ __('Buku Besar') }}
                             </span>
 
-                            @if($id)
                             <div class="float-right">
-                                <a href="{{ route('transactions.cetak-buku',$id) }}" target="_blank" class="btn btn-success btn-sm">
+                                <a href="{{ route('transactions.cetak-buku') }}" target="_blank" class="btn btn-success btn-sm">
                                     {{ __('Cetak') }}
                                 </a>
                             </div>
-                            @endif
                         </div>
                     </div>
 
                     <div class="card-body">
-                        <form name="formfilter">
-                            {{ Form::select('id', $accounts, $id, ['class' => 'form-control select2','placeholder'=>'- Pilih -','onchange'=>'formfilter.submit()']) }}
-                        </form>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <thead class="thead">
                                     <tr>
-                                        <th>No</th>
+                                        <th># ID</th>
                                         
-										<th>Tanggal</th>
-										{{-- <th>Akun</th> --}}
-										{{-- <th>Ref.</th> --}}
-										<th>Deskripsi</th>
+										<th>Tanggal / Deskripsi</th>
 										<th>Debit</th>
 										<th>Kredit</th>
-										<th>Saldo</th>
+										<th>Net</th>
+										<th>Saldo Akhir</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if($id)
+                                    @foreach ($accounts as $i => $account)
+                                    <?php $saldo_awal = $account->balance; ?>
                                         <tr>
-                                            <td></td>
-                                            <td></td>
-                                            {{-- <td></td> --}}
-                                            {{-- <td></td> --}}
-                                            <td>Saldo Awal</td>
-                                            <td>{{$selected_account->debt_format}}</td>
-                                            <td>{{$selected_account->credit_format}}</td>
-                                            <td>{{$selected_account->balance_format}}</td>
+                                            <td colspan="6" class="font-weight-bold">{{$account->refAccount->account_code}} - {{$account->refAccount->name}} (Saldo Awal : {{$account->balance_format}})</td>
                                         </tr>
-                                    @endif
-                                    @foreach ($transactions as $i => $transaction)
+                                    @foreach($account->transactions()->orderby('date','asc')->get() as $transaction)
                                         <tr>
-                                            <td>{{ ++$i }}</td>
-                                            
-											<td>{{ $transaction->date->format('d-m-Y') }}</td>
-											{{-- <td>{{ $transaction->account->refAccount->account_code }} - {{ $transaction->account->refAccount->name }}</td> --}}
-											{{-- <td>{{ $transaction->reference }}</td> --}}
-											<td>{{ $transaction->description }}</td>
-											<td>{{ $transaction->debt_format }}</td>
-											<td>{{ $transaction->credit_format }}</td>
-											<td>{{ $transaction->balance_format }}</td>
+                                            <td>{{$account->id}}</td>
+                                            <td>{{$transaction->date->format('d/m/Y')}} - {{$transaction->description??$transaction->parent->description}}</td>
+                                            <td>{{$transaction->debt_format}}</td>
+                                            <td>{{$transaction->credit_format}}</td>
+                                            <td></td>
+                                            <td>{{number_format($saldo_awal += $transaction->balance)}}</td>
+                                        </tr>
+                                    @endforeach
+                                        <tr class="font-weight-bold">
+                                            <td></td>
+                                            <td>Total</td>
+                                            <td>{{$account->t_debt_format}}</td>
+                                            <td>{{$account->t_credit_format}}</td>
+                                            <td>{{$account->t_net_format}}</td>
+                                            <td>{{$account->t_balance_format}}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

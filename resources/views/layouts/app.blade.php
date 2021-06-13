@@ -22,6 +22,14 @@
     <style>
     .select2 {
         width: 100%!important;
+        position: relative !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height:36px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow,
+    .select2-container .select2-selection--single {
+        height:36px;
     }
     </style>
 </head>
@@ -106,6 +114,11 @@
     <script src="{{asset('select2/js/select2.min.js')}}"></script>
     <script>
         $('.select2').select2({placeholder:'- Pilih -'})
+        function select2reinit()
+        {
+            $('.select2').select2({placeholder:'- Pilih -'})
+        }
     </script>
+    @yield('script')
 </body>
 </html>

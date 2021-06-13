@@ -26,11 +26,12 @@ class Transaction extends Model
 {
     
     static $rules = [
-		'account_id' => 'required',
-		'date' => 'required',
-		'description' => 'required',
-		'debt' => 'required',
-		'credit' => 'required',
+		'account_id'       => 'required',
+		'transaction_code' => 'required',
+		'date'             => 'required',
+		'description'      => 'required',
+		'debt'             => 'required',
+		'credit'           => 'required',
     ];
 
     protected $perPage = 20;
@@ -40,7 +41,7 @@ class Transaction extends Model
      *
      * @var array
      */
-    protected $fillable = ['account_id','ref_account_id','date','description','reference','debt','credit'];
+    protected $fillable = ['account_id','parent_id','date','description','debt','credit','transaction_code'];
 
     protected $casts = [
       'date' => 'datetime',
@@ -75,6 +76,16 @@ class Transaction extends Model
     public function getCreditFormatAttribute()
     {
         return number_format($this->credit);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(Transaction::class,'parent_id','id');
+    }
+
+    public function parent()
+    {
+        return $this->hasOne(Transaction::class,'id','parent_id');
     }
 
 }

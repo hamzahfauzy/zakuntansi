@@ -6,34 +6,34 @@
     <thead class="thead">
         <tr>
             <th>#</th>
-            <th>Akun / Deskripsi</th>
+            
+            <th>Tanggal</th>
+            <th>Akun</th>
+            <!-- <th>Ref.</th> -->
+            <th>Deskripsi</th>
             <th>Debit</th>
             <th>Kredit</th>
             <th>Balance</th>
+
         </tr>
     </thead>
     <tbody>
-        @foreach ($transactions as $transaction)
+        @forelse ($transactions as $transaction)
             <tr>
-                <td>{{ $transaction->account->refAccount->account_code }}</td>
+                <td>{{++$i}}</td>
                 
-                <!-- <td>{{ $transaction->date->format('d-m-Y') }}</td> -->
-                <td>{{ $transaction->account->refAccount->name }}</td>
-                <!-- <td>{{ $transaction->reference }}</td> -->
-                <td>{{ $transaction->account->t_debt_format }}</td>
-                <td>{{ $transaction->account->t_credit_format }}</td>
-                <td>{{ $transaction->account->t_balance_format }}</td>
+                <td>{{ $transaction->date->format('d-m-Y') }}</td>
+                <td>{{ $transaction->account->refAccount->account_code }} - {{ $transaction->account->refAccount->name }}</td>
+                <td>{{ $transaction->description }}</td>
+                <td>{{ $transaction->debt_format }}</td>
+                <td>{{ $transaction->credit_format }}</td>
+                <td>{{ $transaction->balance_format }}</td>
             </tr>
-            @foreach($transaction->account->transactions as $key => $t)
-            <tr id="child-data-{{$i}}" class="">
-                <td>{{ $transaction->account->refAccount->account_code }} - {{++$key}}</td>
-                <td><span class="ml-3">{{ $t->description }}</span></td>
-                <td>{{ $t->debt_format }}</td>
-                <td>{{ $t->credit_format }}</td>
-                <td>{{ $t->balance_format }}</td>
+        @empty
+            <tr>
+                <td colspan="7"><i>Tidak ada Data</i></td>
             </tr>
-            @endforeach
-        @endforeach
+        @endforelse
     </tbody>
 </table>
 <script>

@@ -27,14 +27,9 @@
             {!! $errors->first('normal_balance', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label(__('debt')) }}
-            {{ Form::text('debt', $account->debt??0, ['class' => 'form-control' . ($errors->has('debt') ? ' is-invalid' : ''), 'placeholder' => 'Debt']) }}
-            {!! $errors->first('debt', '<div class="invalid-feedback">:message</p>') !!}
-        </div>
-        <div class="form-group">
-            {{ Form::label(__('credit')) }}
-            {{ Form::text('credit', $account->credit??0, ['class' => 'form-control' . ($errors->has('credit') ? ' is-invalid' : ''), 'placeholder' => 'Credit']) }}
-            {!! $errors->first('credit', '<div class="invalid-feedback">:message</p>') !!}
+            {{ Form::label(__('balance')) }}
+            {{ Form::text('balance', $account->balance??0, ['class' => 'form-control' . ($errors->has('balance') ? ' is-invalid' : ''), 'placeholder' => 'balance']) }}
+            {!! $errors->first('balance', '<div class="invalid-feedback">:message</p>') !!}
         </div>
 
     </div>

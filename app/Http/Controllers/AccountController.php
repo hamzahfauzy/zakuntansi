@@ -26,7 +26,10 @@ class AccountController extends Controller
     public function index()
     {
         $book = session('book');
-        $accounts = Account::where('book_id',$book->id)->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')->orderBy('ref_accounts.account_code')->select('accounts.*')->paginate();
+        $accounts = Account::where('book_id',$book->id)
+        ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
+        ->where('ref_accounts.parent_id',NULL)
+        ->orderBy('ref_accounts.account_code')->select('accounts.*')->paginate();
 
         return view('account.index', compact('accounts','book'))
             ->with('i', (request()->input('page', 1) - 1) * $accounts->perPage());
@@ -35,9 +38,11 @@ class AccountController extends Controller
     public function neraca()
     {
         $book = session('book');
-        $accounts = Account::where('book_id',$book->id)->whereHas('refAccount',function($q){
-            $q->where('pos','Nrc');
-        })->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')->orderBy('ref_accounts.account_code')->select('accounts.*')->get();
+        $accounts = Account::where('book_id',$book->id)
+        ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
+        ->where('ref_accounts.parent_id',NULL)
+        ->where('ref_accounts.pos','Nrc')
+        ->orderBy('ref_accounts.account_code')->select('accounts.*')->paginate();
 
         return view('account.neraca', compact('accounts','book'));
     }
@@ -118,9 +123,10 @@ class AccountController extends Controller
             'account_code' => 'required',
             'name'         => 'required',
             'pos'          => 'required',
+            'balance'      => 'required',
             'normal_balance' => 'required',
-            'debt'         => 'required',
-            'credit'       => 'required'
+            // 'debt'         => 'required',
+            // 'credit'       => 'required'
         ]);
 
         $data = $request->all();
@@ -215,7 +221,9 @@ class AccountController extends Controller
      */
     public function update(Request $request, Account $account)
     {
-        request()->validate(Account::$update_rules);
+        request()->validate([
+            'balance' => 'required'
+        ]);
 
         $account->update($request->all());
 

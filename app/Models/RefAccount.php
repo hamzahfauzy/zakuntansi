@@ -53,7 +53,7 @@ class RefAccount extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function refAccounts()
+    public function childs()
     {
         return $this->hasMany('App\Models\RefAccount', 'parent_id', 'id');
     }

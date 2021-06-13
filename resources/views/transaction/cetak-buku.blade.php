@@ -6,33 +6,38 @@
 <table border="1" cellpadding="5" cellspacing="0" width="100%">
     <thead class="thead">
         <tr>
-            <th>No</th>
+            <th># ID</th>
             
-            <th>Tanggal</th>
-            <th>Deskripsi</th>
+            <th>Tanggal / Deskripsi</th>
             <th>Debit</th>
             <th>Kredit</th>
-            <th>Saldo</th>
+            <th>Net</th>
+            <th>Saldo Akhir</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td></td>
-            <td></td>
-            <td>Saldo Awal</td>
-            <td>{{$selected_account->debt_format}}</td>
-            <td>{{$selected_account->credit_format}}</td>
-            <td>{{$selected_account->balance_format}}</td>
-        </tr>
-        @foreach ($transactions as $i => $transaction)
+        @foreach ($accounts as $i => $account)
+        <?php $saldo_awal = $account->balance; ?>
             <tr>
-                <td>{{ ++$i }}</td>
-                
-                <td>{{ $transaction->date->format('d-m-Y') }}</td>
-                <td>{{ $transaction->description }}</td>
-                <td>{{ $transaction->debt_format }}</td>
-                <td>{{ $transaction->credit_format }}</td>
-                <td>{{ $transaction->balance_format }}</td>
+                <td colspan="6" class="font-weight-bold">{{$account->refAccount->account_code}} - {{$account->refAccount->name}} (Saldo Awal : {{$account->balance_format}})</td>
+            </tr>
+        @foreach($account->transactions()->orderby('date','asc')->get() as $transaction)
+            <tr>
+                <td>{{$account->id}}</td>
+                <td>{{$transaction->date->format('d/m/Y')}} - {{$transaction->description??$transaction->parent->description}}</td>
+                <td>{{$transaction->debt_format}}</td>
+                <td>{{$transaction->credit_format}}</td>
+                <td></td>
+                <td>{{number_format($saldo_awal += $transaction->balance)}}</td>
+            </tr>
+        @endforeach
+            <tr class="font-weight-bold">
+                <td></td>
+                <td>Total</td>
+                <td>{{$account->t_debt_format}}</td>
+                <td>{{$account->t_credit_format}}</td>
+                <td>{{$account->t_net_format}}</td>
+                <td>{{$account->t_balance_format}}</td>
             </tr>
         @endforeach
     </tbody>

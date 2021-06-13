@@ -1,71 +1,46 @@
 <div class="box box-info padding-1">
     <div class="box-body">
-        <div class="form-group">
-            <b>Transaksi</b>
-            @if(count($transaction->items))
-            <input type="hidden" id="all_items" value='@json($transaction->items)'>
-            @endif
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <div class="form-group">
-                    <label for="">Tanggal</label>
-                    {{ Form::date('date', $transaction->date, ['class' => 'form-control', 'placeholder' => 'Tanggal','required']) }}
-                </div>
-                <div class="form-group">
-                    <label for="">Kode</label>
-                    {{ Form::text('transaction_code', $transaction->transaction_code, ['class' => 'form-control', 'placeholder' => 'Kode Transaksi','required']) }}
-                </div>
-                <div class="form-group">
-                    <label for="">Akun</label>
-                    {{ Form::select('account_id', $accounts, $transaction->account_id, ['class' => 'form-control select2','placeholder'=>'- Pilih -','required']) }}
-                </div>
-            </div>
-            <div class="col-12 col-md-6">
-                <div class="form-group">
-                    <label for="">Deskripsi</label>
-                    {{ Form::text('description', $transaction->description, ['class' => 'form-control', 'placeholder' => 'Description','required']) }}
-                </div>
-                <div class="form-group">
-                    <label for="">Tipe</label>
-                    {{ Form::select('tipe', ['Debt'=>'Debt','Credit'=>'Credit'], $transaction->debt==0?'Credit':'Debt', ['class' => 'form-control','placeholder'=>'- Pilih -','required']) }}
-                </div>
-                <div class="form-group">
-                    <label for="">Nominal</label>
-                    {{ Form::number('nominal', $transaction->debt==0?$transaction->credit:$transaction->debt, ['class' => 'form-control', 'placeholder' => 'Nominal','required']) }}
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <b>Lawan Transaksi</b>
-        </div>
+        @if(isset($transactions))
+        <input type="hidden" id="all_transactions" value='@json($transactions)'>
+        @endif
+
         <div class="form-group">
             <table class="table table-bordered" id="table-jurnal">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Tipe</th>
+                        <th style="width: 80px !important;">Tanggal</th>
                         <th>Akun</th>
+                        <th>Tipe</th>
+                        <th>Deskripsi</th>
                         <th>Nominal</th>
                         <th style="display:none"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr id="row_1">
-                        <td width="10%">
-
+                        <td>
+                            @if($transaction->id)
+                            <button class="btn btn-sm btn-danger" type="button" onclick="deleteFirstRow()">X</button>
+                            @endif
                         </td>
-                        <td width="20%">
-                            {{ Form::select('item_tipe[]', ['Debt'=>'Debt','Credit'=>'Credit'], '', ['class' => 'form-control','placeholder'=>'- Pilih -','required']) }}
+                        <td style="width: 80px !important;">
+                            {{ Form::date('date[]', $transaction->date, ['class' => 'form-control', 'placeholder' => 'Tanggal','required']) }}
                         </td>
-                        <td width="20%">
-                            {{ Form::select('item_account_id[]', $accounts, '', ['class' => 'form-control select2','placeholder'=>'- Pilih -','required']) }}
+                        <td>
+                            {{ Form::select('account_id[]', $accounts, $transaction->account_id, ['class' => 'form-control select2','placeholder'=>'- Pilih -','required']) }}
                         </td>
-                        <td width="50%">
-                            {{ Form::number('item_nominal[]', 0, ['class' => 'form-control', 'placeholder' => 'Nominal','required']) }}
+                        <td>
+                            {{ Form::select('tipe[]', ['Debt'=>'Debt','Credit'=>'Credit'], $transaction->debt==0?'Credit':'Debt', ['class' => 'form-control','placeholder'=>'- Pilih -','required']) }}
+                        </td>
+                        <td>
+                            {{ Form::text('description[]', $transaction->description, ['class' => 'form-control', 'placeholder' => 'Description','required']) }}
+                        </td>
+                        <td>
+                            {{ Form::number('nominal[]', $transaction->debt==0?$transaction->credit:$transaction->debt, ['class' => 'form-control', 'placeholder' => 'Nominal','required']) }}
                         </td>
                         <td style="display:none">
-                            <input type="hidden" name="item_id[]" value="" class="transaction_item_ids">
+                            <input type="hidden" name="transaction_id[]" value="{{$transaction->id}}" class="transaction_ids">
                         </td>
                     </tr>
                 </tbody>
@@ -78,7 +53,7 @@
     </div>
 </div>
 <div style="display:none" id="accounts_element">
-{{ Form::select('all_account_id', $accounts, $transaction->account_id, ['class' => 'form-control','placeholder'=>'- Pilih -']) }}
+{{ Form::select('account_id[]', $accounts, $transaction->account_id, ['class' => 'form-control','placeholder'=>'- Pilih -','required']) }}
 </div>
 @section('script')
 <script>
@@ -101,7 +76,6 @@ function addRow(val = false)
             newcell.style.display="none"
 
         newcell.innerHTML = table.rows[1].cells[i].innerHTML;
-        console.log(newcell.childNodes[1],val[i])
         switch(newcell.childNodes[1].type) {
             case "text":
                     newcell.childNodes[1].value = val[i]??"";
@@ -116,15 +90,13 @@ function addRow(val = false)
                         if(val == false)
                             newcell.childNodes[1].value = ''
                         else
-                            newcell.childNodes[1].value = val[i]??0;
-
-                        newcell.childNodes[1].name = 'item_account_id[]'
+                            newcell.childNodes[1].selectedIndex = val[i]??0;
                         newcell.childNodes[1].classList.add('select2')
                         $(newcell.childNodes[1]).select2()
                         // select2reinit()
                     }
                     else
-                        newcell.childNodes[1].value = val[i];
+                        newcell.childNodes[1].selectedIndex = val[i]??0;
                     break;
             case "date":
                     newcell.childNodes[1].value = val[i]??'';
@@ -144,6 +116,7 @@ function deleteFirstRow()
 {
     var table = document.getElementById('table-jurnal');
     // table.rows[1].cells[i]
+    console.log(table.rows)
     if(table.rows.length == 2)
     {
         var colCount = table.rows[0].cells.length;
@@ -174,14 +147,13 @@ function deleteFirstRow()
         deleteRow(1)
     }
 }
-
-@if(count($transaction->items))
-var all_transactions = document.querySelector('#all_items').value
+@if(isset($transactions))
+var all_transactions = document.querySelector('#all_transactions').value
 all_transactions = JSON.parse(all_transactions)
 all_transactions.forEach((transaction,idx) => {
-    addRow(['',transaction.debt==0?'Credit':'Debt',transaction.account_id,transaction.debt==0?transaction.credit:transaction.debt,transaction.id])
+    if(idx==0) return
+    addRow(['',transaction.date.split('T')[0],transaction.account_id,parseInt(transaction.debt)==0?2:1,transaction.description,transaction.debt==0?transaction.credit:transaction.debt,transaction.id])
 })
-deleteRow(1)
 @endif
 </script>
 @endsection

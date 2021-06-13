@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <section class="content container">
+    <section class="container fluid">
         <div class="row">
             <div class="col-md-12">
 
@@ -13,7 +13,7 @@
 
                 <div class="card card-default">
                     <div class="card-header">
-                        <span class="card-title">Create Transaction</span>
+                        <span class="card-title">Panel Jurnal</span>
                     </div>
                     <div class="card-body">
                         @if ($errors->any())

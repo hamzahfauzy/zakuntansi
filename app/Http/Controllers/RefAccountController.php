@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\RefAccount;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class RefAccountController
@@ -86,8 +87,9 @@ class RefAccountController extends Controller
     public function edit($id)
     {
         $refAccount = RefAccount::find($id);
+        $all_accounts = RefAccount::select(DB::Raw('CONCAT(account_code," - ",name) as account_name'),'id')->where('id','<>',$id)->orderby('account_code')->get()->pluck('account_name','id');
 
-        return view('ref-account.edit', compact('refAccount'));
+        return view('ref-account.edit', compact('refAccount','all_accounts'));
     }
 
     /**
@@ -100,11 +102,12 @@ class RefAccountController extends Controller
     public function update(Request $request, RefAccount $refAccount)
     {
         $rules = RefAccount::$rules;
-        $rules['account_code'] = $rules['account_code'] . ',id,' . $refAccount->id;
+        $rules['account_code'] = $rules['account_code'] . ',account_code,' . $refAccount->id;
+
         request()->validate($rules);
 
         $data = $request->all();
-        $data['parent_id'] = $data['parent_id'] == 0 ? NULL : $data['parent_id'];
+        // $data['parent_id'] = $data['parent_id'] == 0 ? NULL : $data['parent_id'];
 
         $refAccount->update($data);
 
