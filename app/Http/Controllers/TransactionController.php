@@ -98,8 +98,8 @@ class TransactionController extends Controller
             'tipe'        => 'required',
             'nominal'     => 'required',
             'transaction_code'  => 'required',
-            'item_account_id.*' => 'required',
-            'item_nominal.*'    => 'required',
+            // 'item_account_id.*' => 'required',
+            // 'item_nominal.*'    => 'required',
         ]);
 
         DB::beginTransaction();
@@ -117,6 +117,7 @@ class TransactionController extends Controller
             // insert item
             foreach($request->item_account_id as $key => $account_id)
             {
+                if($account_id == null) continue;
                 Transaction::create([
                     'parent_id' => $transaction->id,
                     'account_id' => $account_id,
@@ -127,7 +128,7 @@ class TransactionController extends Controller
             }
             DB::commit();
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
             DB::rollback();
         }
 
@@ -195,8 +196,8 @@ class TransactionController extends Controller
             'tipe'        => 'required',
             'nominal'     => 'required',
             'transaction_code'  => 'required',
-            'item_account_id.*' => 'required',
-            'item_nominal.*'    => 'required',
+            // 'item_account_id.*' => 'required',
+            // 'item_nominal.*'    => 'required',
         ]);
         // $accs = Account::where('book_id',$this->book_id())->get()->pluck('id')->toArray();
         // $transactions = Transaction::whereIn('account_id',$accs)->get()->pluck('id');
@@ -212,42 +213,57 @@ class TransactionController extends Controller
                 'debt' => $request->tipe == 'Debt' ? $request->nominal : 0,
                 'credit' => $request->tipe == 'Credit' ? $request->nominal : 0,
             ]);
-            $items = $transaction->items()->pluck('id');
             if(is_array($request->item_id))
             {
-                foreach($items as $t)
+                if($transaction->items()->exists())
                 {
-                    if(!in_array($t, $request->item_id))
+                    $items = $transaction->items()->pluck('id');
+                    foreach($items as $t)
+                    {
+                        if(!in_array($t, $request->item_id))
                         Transaction::find($t)->delete();
-                }
-                foreach($request->item_id as $key => $value)
-                {
-                    if($value == 'undefined')
-                    {
-                        Transaction::create([
-                            'parent_id' => $transaction->id,
-                            'account_id' => $request->item_account_id[$key],
-                            'debt' => $request->item_tipe[$key] == 'Debt' ? $request->item_nominal[$key] : 0,
-                            'credit' => $request->item_tipe[$key] == 'Credit' ? $request->item_nominal[$key] : 0,
-                        ]);
-                    }
-                    else
-                    {
-                        $item = Transaction::find($value);
-                        $item->update([
-                            'account_id' => $request->item_account_id[$key],
-                            'date' => $request->date,
-                            'debt' => $request->item_tipe[$key] == 'Debt' ? $request->item_nominal[$key] : 0,
-                            'credit' => $request->item_tipe[$key] == 'Credit' ? $request->item_nominal[$key] : 0,
-                        ]);
                     }
                 }
             }
             else
-                Transaction::whereIn('id',$items)->delete();
+            {
+                if($transaction->items()->exists())
+                {
+                    $items = $transaction->items()->pluck('id');
+                    Transaction::whereIn('id',$items)->delete();
+                }
+            }
+
+
+            if(is_array($request->item_account_id))
+            foreach($request->item_account_id as $key => $value)
+            {
+                $item_id = $request->item_id[$key];
+                if($item_id)
+                {
+                    $item = Transaction::find($item_id);
+                    $item->update([
+                        'account_id' => $request->item_account_id[$key],
+                        'date' => $request->date,
+                        'debt' => $request->item_tipe[$key] == 'Debt' ? $request->item_nominal[$key] : 0,
+                        'credit' => $request->item_tipe[$key] == 'Credit' ? $request->item_nominal[$key] : 0,
+                    ]);
+                }
+                else
+                {
+                    if($value == null || $value == 'undefined') continue;
+                    Transaction::create([
+                        'parent_id' => $transaction->id,
+                        'account_id' => $value,
+                        'date' => $request->date,
+                        'debt' => $request->item_tipe[$key] == 'Debt' ? $request->item_nominal[$key] : 0,
+                        'credit' => $request->item_tipe[$key] == 'Credit' ? $request->item_nominal[$key] : 0,
+                    ]);
+                }
+            }
             DB::commit();
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
             DB::rollback();
         }
 

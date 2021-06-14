@@ -147,6 +147,26 @@ class Account extends Model
     {
         return number_format($this->credit);
     }
+
+    function balance_from_child()
+    {
+        $balance = 0;
+        $childs = $this->childs;
+        foreach($childs as $child)
+        {
+            if(count($child->childs))
+                $balance += $child->balance_from_child();
+            else
+                $balance += $child->t_balance;
+        }
+
+        return $balance;
+    }
+
+    function balance_format()
+    {
+        return number_format($this->balance_from_child());
+    }
     
 
 }

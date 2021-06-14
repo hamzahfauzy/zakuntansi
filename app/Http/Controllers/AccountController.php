@@ -38,13 +38,33 @@ class AccountController extends Controller
     public function neraca()
     {
         $book = session('book');
-        $accounts = Account::where('book_id',$book->id)
-        ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
-        ->where('ref_accounts.parent_id',NULL)
-        ->where('ref_accounts.pos','Nrc')
-        ->orderBy('ref_accounts.account_code')->select('accounts.*')->paginate();
+        $header_account = RefAccount::whereDoesntHave('refAccount')->select(DB::Raw('CONCAT(account_code," - ",name) as account_name'),'id')->orderby('account_code')->get()->pluck('account_name','id');
+        // $header_account = RefAccount::whereDoesntHave('refAccount')->get()->pluck('name','id');
+        $accounts = [];
+        $neraca = [];
+        if(isset($_GET['account']))
+        {
+            // activa = hutang + modal
+            $accounts = Account::where('book_id',$book->id)
+            ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
+            ->where('ref_accounts.parent_id',NULL)
+            ->where('ref_accounts.pos','Nrc')
+            ->orderBy('ref_accounts.account_code')->select('accounts.*')->get();
+            
 
-        return view('account.neraca', compact('accounts','book'));
+            $activa = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['activa'])->first();
+            $hutang = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['hutang'])->first();
+            $modal = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['modal'])->first();
+
+            $neraca = [
+                'aktiva' => $activa->balance_format(),
+                'hutang' => $hutang->balance_format(),
+                'modal' => $modal->balance_format(),
+                'saldo' => number_format(($activa->balance_from_child() - ($hutang->balance_from_child()+$modal->balance_from_child())))
+            ];
+        }
+
+        return view('account.neraca', compact('accounts','book','header_account','neraca'));
     }
 
     public function cetakNeraca()
@@ -82,7 +102,7 @@ class AccountController extends Controller
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
         $book_id = $this->book_id();
         // Account::truncate();
-        $all_current_accounts = Account::where('book_id',$this->book_id())->get('id');
+        $all_current_accounts = Account::where('book_id',$this->book_id())->get('ref_account_id');
         $all_master_accounts = RefAccount::whereNotIn('id',$all_current_accounts)->get();
         foreach($all_master_accounts as $account)
         {

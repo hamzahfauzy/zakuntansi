@@ -56,13 +56,13 @@
 
                         </td>
                         <td width="20%">
-                            {{ Form::select('item_tipe[]', ['Debt'=>'Debt','Credit'=>'Credit'], '', ['class' => 'form-control','placeholder'=>'- Pilih -','required']) }}
+                            {{ Form::select('item_tipe[]', ['Debt'=>'Debt','Credit'=>'Credit'], '', ['class' => 'form-control','placeholder'=>'- Pilih -']) }}
                         </td>
                         <td width="20%">
-                            {{ Form::select('item_account_id[]', $accounts, '', ['class' => 'form-control select2','placeholder'=>'- Pilih -','required']) }}
+                            {{ Form::select('item_account_id[]', $accounts, '', ['class' => 'form-control select2','placeholder'=>'- Pilih -']) }}
                         </td>
                         <td width="50%">
-                            {{ Form::number('item_nominal[]', 0, ['class' => 'form-control', 'placeholder' => 'Nominal','required']) }}
+                            {{ Form::number('item_nominal[]', 0, ['class' => 'form-control', 'placeholder' => 'Nominal']) }}
                         </td>
                         <td style="display:none">
                             <input type="hidden" name="item_id[]" value="" class="transaction_item_ids">
@@ -101,13 +101,14 @@ function addRow(val = false)
             newcell.style.display="none"
 
         newcell.innerHTML = table.rows[1].cells[i].innerHTML;
-        console.log(newcell.childNodes[1],val[i])
         switch(newcell.childNodes[1].type) {
             case "text":
                     newcell.childNodes[1].value = val[i]??"";
+                    newcell.childNodes[1].required = true
                     break;
             case "checkbox":
                     newcell.childNodes[1].checked = val[i]??false;
+                    newcell.childNodes[1].required = true
                     break;
             case "select-one":
                     if(newcell.childNodes[1].classList.contains('select2'))
@@ -118,19 +119,25 @@ function addRow(val = false)
                         else
                             newcell.childNodes[1].value = val[i]??0;
 
+                        newcell.childNodes[1].required = true
                         newcell.childNodes[1].name = 'item_account_id[]'
                         newcell.childNodes[1].classList.add('select2')
                         $(newcell.childNodes[1]).select2()
                         // select2reinit()
                     }
                     else
+                    {
                         newcell.childNodes[1].value = val[i];
+                        newcell.childNodes[1].required = true
+                    }
                     break;
             case "date":
                     newcell.childNodes[1].value = val[i]??'';
+                    newcell.childNodes[1].required = true
                     break;
             default:
                     newcell.childNodes[1].value = val[i];
+                    newcell.childNodes[1].required = true
                     break;
         }
     }
