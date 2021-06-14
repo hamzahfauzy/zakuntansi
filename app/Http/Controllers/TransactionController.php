@@ -44,11 +44,13 @@ class TransactionController extends Controller
 
     public function bukuBesar()
     {
-        $all_ref_accounts = RefAccount::doesntHave('childs')->get()->pluck('id');
+        // $all_ref_accounts = RefAccount::doesntHave('childs')->get()->pluck('id');
         $accounts = Account::where('book_id',$this->book_id())
-                    ->whereIn('ref_account_id',$all_ref_accounts)
-                    ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
-                    ->orderBy('ref_accounts.account_code')
+                    ->with('refAccount')
+                    ->orderby('ref_accounts.account_code')
+                    // ->whereIn('ref_account_id',$all_ref_accounts)
+                    // ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
+                    // ->orderBy('ref_accounts.account_code')
                     ->get();
         
         return view('transaction.buku-besar', compact('accounts'));
