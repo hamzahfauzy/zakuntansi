@@ -71,11 +71,26 @@ class AccountController extends Controller
     public function cetakNeraca()
     {
         $book = session('book');
-        $accounts = Account::where('book_id',$book->id)->whereHas('refAccount',function($q){
-            $q->where('pos','Nrc');
-        })->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')->orderBy('ref_accounts.account_code')->select('accounts.*')->get();
+        $accounts = Account::where('book_id',$book->id)
+        ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
+        ->where('ref_accounts.parent_id',NULL)
+        ->where('ref_accounts.pos','Nrc')
+        ->orderBy('ref_accounts.account_code')->select('accounts.*')->get();
+        
 
-        return view('account.cetak-neraca', compact('accounts','book'));
+        $activa = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['activa'])->first();
+        $hutang = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['hutang'])->first();
+        $modal = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['modal'])->first();
+        $saldo = ($activa ? $activa->balance_from_child() : 0) - ($hutang?$hutang->balance_from_child():0) + ($modal?$modal->balance_from_child():0);
+
+        $neraca = [
+            'aktiva' => $activa?$activa->balance_format():0,
+            'hutang' => $hutang?$hutang->balance_format():0,
+            'modal' => $modal?$modal->balance_format():0,
+            'saldo' => number_format($saldo)
+        ];
+
+        return view('account.cetak-neraca', compact('accounts','book','neraca'));
     }
 
     public function labaRugi()
