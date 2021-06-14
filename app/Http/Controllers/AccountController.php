@@ -55,12 +55,13 @@ class AccountController extends Controller
             $activa = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['activa'])->first();
             $hutang = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['hutang'])->first();
             $modal = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['modal'])->first();
+            $saldo = ($activa ? $activa->balance_from_child() : 0) - ($hutang?$hutang->balance_from_child():0) + ($modal?$modal->balance_from_child():0);
 
             $neraca = [
-                'aktiva' => $activa->balance_format(),
-                'hutang' => $hutang->balance_format(),
-                'modal' => $modal->balance_format(),
-                'saldo' => number_format(($activa->balance_from_child() - ($hutang->balance_from_child()+$modal->balance_from_child())))
+                'aktiva' => $activa?$activa->balance_format():0,
+                'hutang' => $hutang?$hutang->balance_format():0,
+                'modal' => $modal?$modal->balance_format():0,
+                'saldo' => number_format($saldo)
             ];
         }
 
