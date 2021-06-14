@@ -16,7 +16,7 @@
 
                             @if($accounts)
                              <div class="float-right">
-                                <a href="{{route('accounts.cetak-neraca')}}" class="btn btn-success btn-sm" target="_blank">
+                                <a href="{{route('accounts.cetak-neraca',$_GET['account'])}}" class="btn btn-success btn-sm" target="_blank">
                                     {{ __('Cetak') }}
                                 </a>
                               </div>
