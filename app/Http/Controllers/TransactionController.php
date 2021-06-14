@@ -46,8 +46,6 @@ class TransactionController extends Controller
     {
         // $all_ref_accounts = RefAccount::doesntHave('childs')->get()->pluck('id');
         $accounts = Account::where('book_id',$this->book_id())
-                    // ->with('refAccount')
-                    // ->orderby('ref_accounts.account_code')
                     // ->whereIn('ref_account_id',$all_ref_accounts)
                     // ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
                     // ->orderBy('ref_accounts.account_code')

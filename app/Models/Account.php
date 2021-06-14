@@ -165,7 +165,7 @@ class Account extends Model
 
     function balance_format()
     {
-        return number_format($this->balance_from_child());
+        return $this->balance_from_child() ? number_format($this->balance_from_child()) : 0;
     }
     
 
