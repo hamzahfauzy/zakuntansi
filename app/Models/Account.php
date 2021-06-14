@@ -152,6 +152,7 @@ class Account extends Model
     {
         $balance = 0;
         $childs = $this->childs;
+        if(count($childs))
         foreach($childs as $child)
         {
             if(count($child->childs))
