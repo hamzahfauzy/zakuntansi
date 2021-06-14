@@ -46,7 +46,7 @@
                                         <tr>
                                             <td colspan="6" class="font-weight-bold">{{$account->refAccount->account_code}} - {{$account->refAccount->name}} (Saldo Awal : {{$account->balance_format}})</td>
                                         </tr>
-                                    @foreach($account->transactions()->orderby('date','asc')->get() as $transaction)
+                                    @foreach($account->transactions as $transaction)
                                         <tr>
                                             <td>{{$account->id}}</td>
                                             <td>{{$transaction->date->format('d/m/Y')}} - {{$transaction->description??$transaction->parent->description}}</td>
