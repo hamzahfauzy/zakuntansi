@@ -16,7 +16,7 @@
 
                             @if($accounts)
                              <div class="float-right">
-                                <a href="{{route('accounts.cetak-neraca',['account'=>$_GET['account']])}}" class="btn btn-success btn-sm" target="_blank">
+                                <a href="{{route('accounts.cetak-neraca',$_GET)}}" class="btn btn-success btn-sm" target="_blank">
                                     {{ __('Cetak') }}
                                 </a>
                               </div>
@@ -39,6 +39,15 @@
                             <div class="form-group">
                                 <label for="">Modal</label>
                                 {{ Form::select('account[modal]', $header_account, isset($_GET['account']) ? $_GET['account']['modal'] : '', ['class' => 'form-control select2', 'placeholder' => '- Pilih -']) }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="">From</label>
+                                <input type="date" name="from" value="{{isset($_GET['from'])?$_GET['from']:''}}" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="">To</label>
+                                <input type="date" name="to" value="{{isset($_GET['to'])?$_GET['to']:''}}" class="form-control" required>
                             </div>
 
                             <button class="btn btn-success">Submit</button>

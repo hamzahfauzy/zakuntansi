@@ -1,6 +1,6 @@
-<h2 align="center">Neraca - {{$book->name}} <br> {{config('app.name', 'Laravel')}}</h2>
+<h2 align="center">Neraca <br> {{auth()->user()->installation->company_name}}</h2>
 <p align="center">
-    {{$book->date_from->format('d-m-Y')}} sampai dengan {{$book->date_to->format('d-m-Y')}}
+    {{$_GET['from']}} sampai dengan {{$_GET['to']}}
 </p>
 <table border="1" cellpadding="5" cellspacing="0" width="100%">
     <thead class="thead">
@@ -17,7 +17,7 @@
         ?>
             <tr>
                 <td>
-                    <b>{{ $account->refAccount->account_code }} - {{ $account->refAccount->name }}</b>
+                    <b>{{ $account->account_code }} - {{ $account->name }}</b>
                 </td>
                 <td>{{ count($account->childs) ? '-' : $account->t_balance_format }}</td>
             </tr>
@@ -27,7 +27,7 @@
         ?>
             <tr>
                 <td>
-                    {{ $child_1->refAccount->account_code }} - {{ $child_1->refAccount->name }}<br>
+                    {{ $child_1->account_code }} - {{ $child_1->name }}<br>
                 </td>
                 <td>{{ count($child_1->childs) ? '-' : $child_1->t_balance_format }}</td>
             </tr>
@@ -37,7 +37,7 @@
         ?>
             <tr>
                 <td>
-                    {{ $child_2->refAccount->account_code }} - {{ $child_2->refAccount->name }}<br>
+                    {{ $child_2->account_code }} - {{ $child_2->name }}<br>
                 </td>
                 <td>{{ count($child_2->childs) ? '-' : $child_2->t_balance_format }}</td>
             </tr>
@@ -47,7 +47,7 @@
         ?>
             <tr>
                 <td>
-                    {{ $child_3->refAccount->account_code }} - {{ $child_3->refAccount->name }}<br>
+                    {{ $child_3->account_code }} - {{ $child_3->name }}<br>
                 </td>
                 <td>{{ count($child_3->childs) ? '-' : $child_3->t_balance_format }}</td>
             </tr>
@@ -63,6 +63,10 @@
         @endforeach
     </tbody>
 </table>
+Total Activa = {{$neraca['aktiva']}}<br>
+Total Hutang = {{$neraca['hutang']}}<br>
+Total Modal = {{$neraca['modal']}}<br>
+{{$neraca['saldo'] == 0 ? 'Balance' : 'Tidak Balance'}}<br>
 <script>
 window.print()
 </script>

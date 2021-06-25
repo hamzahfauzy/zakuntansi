@@ -32,8 +32,8 @@
                     {{ Form::select('tipe', ['Debt'=>'Debt','Credit'=>'Credit'], $transaction->debt==0?'Credit':'Debt', ['class' => 'form-control','placeholder'=>'- Pilih -','required']) }}
                 </div>
                 <div class="form-group">
-                    <label for="">Nominal (<span id="nominal">{{$transaction->debt||$transaction->credit?'Rp '.number_format($transaction->debt??$transaction->credit):0}}</span>)</label>
-                    {{ Form::number('nominal', $transaction->debt||$transaction->credit?($transaction->debt??$transaction->credit):0, ['class' => 'form-control nominal', 'placeholder' => 'Nominal','required']) }}
+                    <label for="">Nominal (<span id="nominal">{{$transaction->debt||$transaction->credit?'Rp '.number_format($transaction->debt>0?$transaction->debt:$transaction->credit):0}}</span>)</label>
+                    {{ Form::number('nominal', $transaction->debt||$transaction->credit?($transaction->debt>0?$transaction->debt:$transaction->credit):0, ['class' => 'form-control nominal', 'placeholder' => 'Nominal','required']) }}
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
                             {{ Form::number('item_nominal[]', 0, ['class' => 'form-control all_nominal', 'placeholder' => 'Nominal','onkeyup' => 'calculateAllNominal()']) }}
                         </td>
                         <td width="20%">
-                            {{ Form::select('item_tipe[]', ['Debt'=>'Debt','Credit'=>'Credit'], 'Debt', ['class' => 'form-control','placeholder'=>'- Pilih -']) }}
+                            {{ Form::select('item_tipe[]', ['Debt'=>'Debt','Credit'=>'Credit'], 'Debt', ['class' => 'form-control item_types','placeholder'=>'- Pilih -']) }}
                         </td>
                         <td style="display:none">
                             <input type="hidden" name="item_id[]" value="" class="transaction_item_ids">
@@ -120,9 +120,15 @@ function updateKode()
 function calculateAllNominal()
 {
     var all_nominal = document.querySelectorAll('.all_nominal')
+    var item_tipe = document.querySelectorAll('.item_types')
+    console.log(item_tipe)
     var nominal_value = 0
     all_nominal.forEach((el,idx) => {
-        nominal_value += parseInt(el.value)
+        var i_tipe = item_tipe[idx].value
+        if(i_tipe == 'Debt')
+            nominal_value += parseInt(el.value)
+        else
+            nominal_value -= parseInt(el.value)
     })
 
     if(nominal_value > document.querySelector('.nominal').value)

@@ -1,6 +1,6 @@
-<h2 align="center">Laba Rugi - {{$book->name}} <br> {{config('app.name', 'Laravel')}}</h2>
+<h2 align="center">Laba Rugi <br> {{auth()->user()->installation->company_name}}</h2>
 <p align="center">
-    {{$book->date_from->format('d-m-Y')}} sampai dengan {{$book->date_to->format('d-m-Y')}}
+    {{$_GET['from']}} sampai dengan {{$_GET['to']}}
 </p>
 <table border="1" cellpadding="5" cellspacing="0" width="100%">
     <thead class="thead">
@@ -8,8 +8,8 @@
             <th>No</th>
             
             <th>Akun</th>
-            <th>POS</th>
-            <th style="white-space:nowrap;">Saldo Normal</th>
+            <th width="150px">POS</th>
+            <th width="150px">Saldo Normal</th>
             <th>Debit</th>
             <th>Kredit</th>
             <th width="120px">Balance</th>
@@ -31,9 +31,9 @@
             <tr>
                 <td>{{ ++$i }}</td>
                 
-                <td style="white-space:nowrap;">{{ $account->refAccount->account_code }} - {{ $account->refAccount->name }}</td>
-                <td>{{ $account->refAccount->pos }}</td>
-                <td>{{ $account->refAccount->normal_balance }}</td>
+                <td>{{ $account->account_code }} - {{ $account->name }}</td>
+                <td>{{ $account->pos }}</td>
+                <td>{{ $account->normal_balance }}</td>
                 <td>{{ $account->t_debt_format }}</td>
                 <td>{{ $account->t_credit_format }}</td>
                 <td>{{ $account->t_balance_format }}</td>

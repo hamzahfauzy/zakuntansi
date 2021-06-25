@@ -72,16 +72,22 @@ class Account extends Model
      */
     public function transactions()
     {
+        if(isset($_GET['from']) && isset($_GET['to']))
+            return $this->hasMany('App\Models\Transaction', 'account_id', 'id')->whereBetween('date',[$_GET['from'],$_GET['to']]);
         return $this->hasMany('App\Models\Transaction', 'account_id', 'id');
     }
 
     public function getTDebtAttribute()
     {
+        if(isset($_GET['from']) && isset($_GET['to']))
+            return $this->transactions()->whereBetween('date',[$_GET['from'],$_GET['to']])->sum('debt');
         return $this->transactions()->sum('debt');
     }
 
     public function getTCreditAttribute()
     {
+        if(isset($_GET['from']) && isset($_GET['to']))
+            return $this->transactions()->whereBetween('date',[$_GET['from'],$_GET['to']])->sum('credit');
         return $this->transactions()->sum('credit');
     }
 

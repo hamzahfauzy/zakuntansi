@@ -11,6 +11,12 @@
 
                 @includeif('partials.errors')
 
+                @if ($message = Session::get('success'))
+                    <div class="alert alert-success">
+                        {{ $message }}
+                    </div>
+                @endif
+
                 <div class="card card-default">
                     <div class="card-header">
                         <span class="card-title">Panel Jurnal</span>

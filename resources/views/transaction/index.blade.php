@@ -9,6 +9,34 @@
 @section('content')
     <div class="container">
         <div class="row">
+            <div class="col-sm-12 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+
+                            <span id="card_title">
+                                {{ __('Filter') }}
+                            </span>
+
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form action="">
+                            <div class="form-group">
+                                <label for="">From</label>
+                                <input type="date" name="from" value="{{isset($_GET['from'])?$_GET['from']:''}}" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="">To</label>
+                                <input type="date" name="to" value="{{isset($_GET['to'])?$_GET['to']:''}}" class="form-control">
+                            </div>
+                            <button class="btn btn-success">Filter</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @if($transactions)
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
@@ -19,10 +47,7 @@
                             </span>
 
                             <div class="float-right">
-                                <a href="{{ route('transactions.create')}}" class="btn btn-primary btn-sm">
-                                  {{ __('Input Jurnal') }}
-                                </a>
-                                <a href="{{ route('transactions.cetak-jurnal') }}" target="_blank" class="btn btn-success btn-sm">
+                                <a href="{{ route('transactions.cetak-jurnal',$_GET) }}" target="_blank" class="btn btn-success btn-sm">
                                     {{ __('Cetak') }}
                                 </a>
                             </div>
@@ -92,6 +117,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 @endsection

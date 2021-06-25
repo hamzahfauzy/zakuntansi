@@ -17,27 +17,47 @@ class TransactionController extends Controller
 {
     public function index()
     {
-        $transactions = Transaction::doesntHave('parent')->orderBy('date')->get();
+        $transactions = Transaction::doesntHave('parent')->orderBy('date','desc')->exists() ? [Transaction::doesntHave('parent')->orderBy('date','desc')->first()] : [];
+        if(isset($_GET['from']) && isset($_GET['to']))
+            $transactions = Transaction::doesntHave('parent')->whereBetween('date',$_GET)->orderBy('date')->get();
         return view('transaction.index', compact('transactions'))
             ->with('i', 0); //(request()->input('page', 1) - 1) * $transactions->perPage());
     }
 
     public function bukuBesar()
     {
-        // $all_ref_accounts = RefAccount::doesntHave('childs')->get()->pluck('id');
-        $accounts = Account::get();
+        $all_accounts = Account::doesntHave('childs')->orderby('account_code')->select('accounts.*',DB::raw("CONCAT(account_code,' - ',name) AS account_name"))
+        ->pluck('account_name','id');
+        $accounts = [];
+        if(isset($_GET['from']) && isset($_GET['to']))
+        {
+            $accounts = Account::with(['transactions'=>function($q) {
+                $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
+            }]);
+
+            if(isset($_GET['account_id']) && !empty($_GET['account_id']))
+                $accounts = $accounts->where('id',$_GET['account_id']);
+
+            $accounts = $accounts->get();
+        }
         
-        return view('transaction.buku-besar', compact('accounts'));
+        return view('transaction.buku-besar', compact('all_accounts','accounts'));
     }
 
     public function cetakBuku()
     {
-        $all_ref_accounts = RefAccount::doesntHave('childs')->get()->pluck('id');
-        $accounts = Account::where('book_id',$this->book_id())
-                    ->whereIn('ref_account_id',$all_ref_accounts)
-                    ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
-                    ->orderBy('ref_accounts.account_code')
-                    ->get();
+        $accounts = [];
+        if(isset($_GET['from']) && isset($_GET['to']))
+        {
+            $accounts = Account::with(['transactions'=>function($q) {
+                $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
+            }]);
+
+            if(isset($_GET['account_id']) && !empty($_GET['account_id']))
+                $accounts = $accounts->where('id',$_GET['account_id']);
+
+            $accounts = $accounts->get();
+        }
 
         return view('transaction.cetak-buku', compact('accounts'));
     }
@@ -109,7 +129,7 @@ class TransactionController extends Controller
 
         // $transaction = Transaction::create($request->all());
 
-        return redirect()->route('transactions.index')
+        return redirect()->route('transactions.create')
             ->with('success', 'Transaction created successfully.');
     }
 
@@ -163,7 +183,6 @@ class TransactionController extends Controller
      */
     public function update(Request $request, Transaction $transaction)
     {
-        // return $request->all();
         $request->validate([
             'date'        => 'required',
             'account_id'  => 'required',
@@ -214,7 +233,7 @@ class TransactionController extends Controller
             foreach($request->item_account_id as $key => $value)
             {
                 $item_id = $request->item_id[$key];
-                if($item_id)
+                if($item_id && $item_id != 'undefined')
                 {
                     $item = Transaction::find($item_id);
                     $item->update([
@@ -242,7 +261,7 @@ class TransactionController extends Controller
             DB::rollback();
         }
 
-        return redirect()->route('transactions.index')
+        return redirect()->route('transactions.edit',$transaction->id)
             ->with('success', 'Transaction updated successfully');
     }
 
@@ -269,15 +288,10 @@ class TransactionController extends Controller
 
     public function cetakJurnal()
     {
-        $accounts = Account::where('book_id',$this->book_id())
-            // ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
-            // ->orderBy('ref_accounts.account_code','asc')
-            // ->select('accounts.*')
-            ->get()->pluck('id')->toArray();
-        $transactions = Transaction::whereIn('account_id',$accounts)->orderby('date')->get();
-        $book = session('book');
-
-        return view('transaction.cetak-jurnal', compact('transactions','book'))
-            ->with('i', 0);
+        $transactions = Transaction::doesntHave('parent')->orderBy('date','desc')->exists() ? [Transaction::doesntHave('parent')->orderBy('date','desc')->first()] : [];
+        if(isset($_GET['from']) && isset($_GET['to']))
+            $transactions = Transaction::doesntHave('parent')->whereBetween('date',$_GET)->orderBy('date')->get();
+        return view('transaction.cetak-jurnal', compact('transactions'))
+            ->with('i', 0); //(request()->input('page', 1) - 1) * $transactions->perPage());
     }
 }

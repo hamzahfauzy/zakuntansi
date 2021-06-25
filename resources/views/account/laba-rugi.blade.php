@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title',config('app.name', 'Laravel').' - Laba Rugi ('.$book->name.')')
+@section('title',config('app.name', 'Laravel').' - Laba Rugi')
 
 @section('template_title')
-    Akun ({{$book->name}})
+    Akun
 @endsection
 
 @section('content')
@@ -15,18 +15,34 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                Neraca ({{$book->name}})
+                                Laba Rugi
                             </span>
 
+                            @if($accounts)
                              <div class="float-right">
-                                <a href="{{route('accounts.cetak-laba-rugi')}}" class="btn btn-success btn-sm" target="_blank">
+                                <a href="{{route('accounts.cetak-laba-rugi',$_GET)}}" class="btn btn-success btn-sm" target="_blank">
                                     {{ __('Cetak') }}
                                 </a>
                               </div>
+                            @endif
                         </div>
                     </div>
 
                     <div class="card-body">
+                        <form action="">
+                            <div class="form-group">
+                                <label for="">From</label>
+                                <input type="date" name="from" value="{{isset($_GET['from'])?$_GET['from']:''}}" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="">To</label>
+                                <input type="date" name="to" value="{{isset($_GET['to'])?$_GET['to']:''}}" class="form-control" required>
+                            </div>
+
+                            <button class="btn btn-success">Submit</button>
+                            <p></p>
+                        </form>
+                        @if($accounts)
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <thead class="thead">
@@ -57,9 +73,9 @@
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             
-											<td>{{ $account->refAccount->account_code }} - {{ $account->refAccount->name }}</td>
-											<td>{{ $account->refAccount->pos }}</td>
-											<td>{{ $account->refAccount->normal_balance }}</td>
+											<td>{{ $account->account_code }} - {{ $account->name }}</td>
+											<td>{{ $account->pos }}</td>
+											<td>{{ $account->normal_balance }}</td>
 											<td>{{ $account->t_debt_format }}</td>
 											<td>{{ $account->t_credit_format }}</td>
 											<td>{{ $account->t_balance_format }}</td>
@@ -72,6 +88,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

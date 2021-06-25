@@ -40,9 +40,15 @@ class AccountController extends Controller
             ->orderBy('account_code')->get();
             
 
-            $activa = Account::where('id',$_GET['account']['activa'])->first();
-            $hutang = Account::where('id',$_GET['account']['hutang'])->first();
-            $modal = Account::where('id',$_GET['account']['modal'])->first();
+            $activa = Account::with(['transactions'=>function($q) {
+                $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
+            }])->where('id',$_GET['account']['activa'])->first();
+            $hutang = Account::with(['transactions'=>function($q) {
+                $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
+            }])->where('id',$_GET['account']['hutang'])->first();
+            $modal = Account::with(['transactions'=>function($q) {
+                $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
+            }])->where('id',$_GET['account']['modal'])->first();
             $saldo = ($activa ? $activa->balance_from_child() : 0) - (($hutang?$hutang->balance_from_child():0) + ($modal?$modal->balance_from_child():0));
 
             $neraca = [
@@ -58,47 +64,55 @@ class AccountController extends Controller
 
     public function cetakNeraca()
     {
-        $book = session('book');
-        $accounts = Account::where('book_id',$book->id)
-        ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
-        ->where('ref_accounts.parent_id',NULL)
-        ->where('ref_accounts.pos','Nrc')
-        ->orderBy('ref_accounts.account_code')->select('accounts.*')->get();
-        
+        $accounts = [];
+        $neraca = [];
+        if(isset($_GET['account']))
+        {
+            // activa = hutang + modal
+            $accounts = Account::where('pos','Nrc')
+            ->orderBy('account_code')->get();
+            
 
-        $activa = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['activa'])->first();
-        $hutang = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['hutang'])->first();
-        $modal = Account::where('book_id',$book->id)->where('ref_account_id',$_GET['account']['modal'])->first();
-        $saldo = ($activa ? $activa->balance_from_child() : 0) - ($hutang?$hutang->balance_from_child():0) + ($modal?$modal->balance_from_child():0);
+            $activa = Account::with(['transactions'=>function($q) {
+                $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
+            }])->where('id',$_GET['account']['activa'])->first();
+            $hutang = Account::with(['transactions'=>function($q) {
+                $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
+            }])->where('id',$_GET['account']['hutang'])->first();
+            $modal = Account::with(['transactions'=>function($q) {
+                $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
+            }])->where('id',$_GET['account']['modal'])->first();
+            $saldo = ($activa ? $activa->balance_from_child() : 0) - (($hutang?$hutang->balance_from_child():0) + ($modal?$modal->balance_from_child():0));
 
-        $neraca = [
-            'aktiva' => $activa?$activa->balance_format():0,
-            'hutang' => $hutang?$hutang->balance_format():0,
-            'modal' => $modal?$modal->balance_format():0,
-            'saldo' => number_format($saldo)
-        ];
+            $neraca = [
+                'aktiva' => $activa?$activa->balance_format():0,
+                'hutang' => $hutang?$hutang->balance_format():0,
+                'modal' => $modal?$modal->balance_format():0,
+                'saldo' => number_format($saldo)
+            ];
+        }
 
-        return view('account.cetak-neraca', compact('accounts','book','neraca'));
+        return view('account.cetak-neraca', compact('accounts','neraca'));
     }
 
     public function labaRugi()
     {
-        $book = session('book');
-        $accounts = Account::where('book_id',$book->id)->whereHas('refAccount',function($q){
-            $q->where('pos','Lr');
-        })->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')->orderBy('ref_accounts.account_code')->select('accounts.*')->get();
+        $accounts = [];
+        if(isset($_GET['from']) && isset($_GET['to']))
+            $accounts = Account::with(['transactions'=>function($q) {
+                $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
+            }])->where('pos','Lr')->orderBy('account_code')->get();
 
-        return view('account.laba-rugi', compact('accounts','book'));
+        return view('account.laba-rugi', compact('accounts'));
     }
 
     public function cetakLabaRugi()
     {
-        $book = session('book');
-        $accounts = Account::where('book_id',$book->id)->whereHas('refAccount',function($q){
-            $q->where('pos','Lr');
-        })->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')->orderBy('ref_accounts.account_code')->select('accounts.*')->get();
+        $accounts = Account::with(['transactions'=>function($q) {
+            $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
+        }])->where('pos','Lr')->orderBy('account_code')->get();
 
-        return view('account.cetak-laba-rugi', compact('accounts','book'));
+        return view('account.cetak-laba-rugi', compact('accounts'));
     }
 
     public function import()

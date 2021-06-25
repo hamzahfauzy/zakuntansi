@@ -63,8 +63,15 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('accounts.index') }}">{{ __('Akun') }}</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('transactions.index') }}">{{ __('Jurnal') }}</a>
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    Jurnal
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('transactions.index') }}">{{ __('Tampil Jurnal') }}</a>
+                                    <a class="dropdown-item" href="{{ route('transactions.create') }}">{{ __('Input Jurnal') }}</a>
+                                </div>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('buku-besar') }}">{{ __('Buku Besar') }}</a>
