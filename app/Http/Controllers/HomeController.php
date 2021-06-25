@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Models\Transaction;
 use App\Models\Installation;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,6 @@ class HomeController extends Controller
     {
         // $this->middleware('auth');
         $this->installation = Installation::first();
-        $this->book = new Book;
     }
 
     /**
@@ -28,10 +28,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        session()->forget('book');
         $installation = $this->installation;
-        $books = $this->book->get();
-        return view('home',compact('installation','books'));
+        return view('home',compact('installation'));
     }
 
     public function installation(Request $request)
@@ -66,5 +64,13 @@ class HomeController extends Controller
             return redirect()->route('home');
         }
         return view('installation');
+    }
+
+    function count_transaction($transaction_code, $month)
+    {
+        $transaction_code = $transaction_code .'/'.$month;
+        $count_transaction = Transaction::doesntHave('parent')->where('transaction_code','LIKE','%'.$transaction_code.'%')->count()+1;
+        $count_transaction = $count_transaction < 10 ? '00'.$count_transaction : ($count_transaction < 100 ? '0'.$count_transaction : $count_transaction);
+        return ['code'=>$transaction_code.'/'.$count_transaction];
     }
 }

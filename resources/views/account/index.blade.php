@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title',config('app.name', 'Laravel').' - Akun ('.$book->name.')')
+@section('title',config('app.name', 'Laravel').' - Akun')
 
 @section('template_title')
-    Akun ({{$book->name}})
+    Akun
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                Akun ({{$book->name}})
+                                Akun
                             </span>
 
                              <div class="float-right">
@@ -23,13 +23,8 @@
                                   {{ __('Tambah Akun') }}
                                 </a>
                                 <a href="{{ route('accounts.import') }}" class="btn btn-success btn-sm" onclick="if(confirm('Apakah anda yakin akan mengimport seluruh data akun?')){return true}else{return false}">
-                                    {{ __('Import Semua Akun') }}
+                                    {{ __('Import Akun') }}
                                 </a>
-                                {{--
-                                <a href="" class="btn btn-success btn-sm">
-                                    {{ __('Import dari Buku') }}
-                                </a>
-                                --}}
                               </div>
                         </div>
                     </div>
@@ -54,35 +49,12 @@
 										<th>Akun</th>
 										<th width="150px">POS</th>
 										<th width="150px">Saldo Normal</th>
-										<th width="120px">Saldo Awal</th>
+										<th width="120px">Saldo</th>
 
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- <tr>
-                                        <td>-</td>
-                                        
-                                        <td><input type="text" pattern=".{4,4}" maxlength="4" class="form-control" name="account_code" id="account_code" onblur="getName(this.value)" ></td>
-                                        <td><input type="text" class="form-control" name="name" id="account_name" ></td>
-                                        <td><select name="pos" class="form-control"  id="account_pos">
-                                            <option value="">- Pilih -</option>
-                                            <option value="Nrc">Neraca</option>
-                                            <option value="Lr">Laba Rugi</option>
-                                        </select></td>
-                                        <td><select name="normal_balance" class="form-control"  id="account_normal_balance">
-                                            <option value="">- Pilih -</option>
-                                            <option value="Debt">Debit</option>
-                                            <option value="Cr">Kredit</option>
-                                        </select></td>
-                                        <td><input type="number" class="form-control" name="debt" id="account_debt" ></td>
-                                        <td><input type="number" class="form-control" name="credit" id="account_credit" ></td>
-                                        <td>-</td>
-
-                                        <td>
-                                            <button class="btn btn-primary btn-sm" onclick="simpanAkun()">Simpan</button>
-                                        </td>
-                                    </tr> --}}
                                     @if($accounts->total() == 0)
                                     <tr>
                                         <td colspan="7"><center>Tidak ada data!</center></td>
@@ -93,24 +65,20 @@
                                             <td>{{ ++$i }}</td>
                                             
 											<td>
-                                                <b>{{ $account->refAccount->account_code }} - {{ $account->refAccount->name }}</b>
+                                                <b>{{ $account->account_code }} - {{ $account->name }}  ({{$account->account_transaction_code}})</b>
                                             </td>
-											<td>{{ $account->refAccount->pos }}</td>
-											<td>{{ $account->refAccount->normal_balance }}</td>
-											<td>{{ count($account->childs) ? '-' : $account->balance_format }}</td>
+											<td>{{ $account->pos }}</td>
+											<td>{{ $account->normal_balance }}</td>
+											<td>{{ $account->balance_format() }}</td>
 
                                             <td>
-                                                @if(count($account->childs))
-                                                -
-                                                @else
-                                                <form action="{{ route('accounts.destroy',$account->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $account->refAccount->account_code }} ?')){return true}else{return false}">
+                                                <form action="{{ route('accounts.destroy',$account->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $account->account_code }} ?')){return true}else{return false}">
                                                     {{-- <a class="btn btn-sm btn-primary " href="{{ route('accounts.show',$account->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
                                                     <a class="btn btn-sm btn-success" href="{{ route('accounts.edit',$account->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Hapus</button>
                                                 </form>
-                                                @endif
                                             </td>
                                         </tr>
                                     @foreach ($account->childs as $child_1)
@@ -118,24 +86,20 @@
                                             <td></td>
                                             
 											<td>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;{{ $child_1->refAccount->account_code }} - {{ $child_1->refAccount->name }}<br>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;{{ $child_1->account_code }} - {{ $child_1->name }} ({{$child_1->account_transaction_code}})<br>
                                             </td>
-											<td>{{ $child_1->refAccount->pos }}</td>
-											<td>{{ $child_1->refAccount->normal_balance }}</td>
-											<td>{{ count($child_1->childs) ? '-' : $child_1->balance_format }}</td>
+											<td>{{ $child_1->pos }}</td>
+											<td>{{ $child_1->normal_balance }}</td>
+											<td>{{ $child_1->balance_format() }}</td>
 
                                             <td>
-                                                @if(count($child_1->childs))
-                                                -
-                                                @else
-                                                <form action="{{ route('accounts.destroy',$child_1->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_1->refAccount->account_code }} ?')){return true}else{return false}">
+                                                <form action="{{ route('accounts.destroy',$child_1->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_1->account_code }} ?')){return true}else{return false}">
                                                     {{-- <a class="btn btn-sm btn-primary " href="{{ route('accounts.show',$child_1->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
                                                     <a class="btn btn-sm btn-success" href="{{ route('accounts.edit',$child_1->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Hapus</button>
                                                 </form>
-                                                @endif
                                             </td>
                                         </tr>
                                     @foreach ($child_1->childs as $child_2)
@@ -145,24 +109,20 @@
 											<td>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
-                                                {{ $child_2->refAccount->account_code }} - {{ $child_2->refAccount->name }}<br>
+                                                {{ $child_2->account_code }} - {{ $child_2->name }}  ({{$child_2->account_transaction_code}})<br>
                                             </td>
-											<td>{{ $child_2->refAccount->pos }}</td>
-											<td>{{ $child_2->refAccount->normal_balance }}</td>
-											<td>{{ count($child_2->childs) ? '-' : $child_2->balance_format }}</td>
+											<td>{{ $child_2->pos }}</td>
+											<td>{{ $child_2->normal_balance }}</td>
+											<td>{{ $child_2->balance_format() }}</td>
 
                                             <td>
-                                                @if(count($child_2->childs))
-                                                -
-                                                @else
-                                                <form action="{{ route('accounts.destroy',$child_2->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_2->refAccount->account_code }} ?')){return true}else{return false}">
+                                                <form action="{{ route('accounts.destroy',$child_2->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_2->account_code }} ?')){return true}else{return false}">
                                                     {{-- <a class="btn btn-sm btn-primary " href="{{ route('accounts.show',$child_2->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
                                                     <a class="btn btn-sm btn-success" href="{{ route('accounts.edit',$child_2->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Hapus</button>
                                                 </form>
-                                                @endif
                                             </td>
                                         </tr>
                                     @foreach ($child_2->childs as $child_3)
@@ -173,26 +133,48 @@
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
-                                                {{ $child_3->refAccount->account_code }} - {{ $child_3->refAccount->name }}<br>
+                                                {{ $child_3->account_code }} - {{ $child_3->name }}  ({{$child_3->account_transaction_code}})<br>
                                             </td>
-											<td>{{ $child_3->refAccount->pos }}</td>
-											<td>{{ $child_3->refAccount->normal_balance }}</td>
-											<td>{{ count($child_3->childs) ? '-' : $child_3->balance_format }}</td>
+											<td>{{ $child_3->pos }}</td>
+											<td>{{ $child_3->normal_balance }}</td>
+											<td>{{ $child_3->balance_format() }}</td>
 
                                             <td>
-                                                @if(count($child_3->childs))
-                                                -
-                                                @else
-                                                <form action="{{ route('accounts.destroy',$child_3->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_3->refAccount->account_code }} ?')){return true}else{return false}">
+                                                <form action="{{ route('accounts.destroy',$child_3->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_3->account_code }} ?')){return true}else{return false}">
                                                     {{-- <a class="btn btn-sm btn-primary " href="{{ route('accounts.show',$child_3->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
                                                     <a class="btn btn-sm btn-success" href="{{ route('accounts.edit',$child_3->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Hapus</button>
                                                 </form>
-                                                @endif
                                             </td>
                                         </tr>
+                                    @foreach ($child_3->childs as $child_4)
+                                        <tr>
+                                            <td></td>
+                                            
+											<td>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                {{ $child_4->account_code }} - {{ $child_4->name }}  ({{$child_4->account_transaction_code}})<br>
+                                            </td>
+											<td>{{ $child_4->pos }}</td>
+											<td>{{ $child_4->normal_balance }}</td>
+											<td>{{ $child_4->balance_format() }}</td>
+
+                                            <td>
+                                                <form action="{{ route('accounts.destroy',$child_4->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_4->account_code }} ?')){return true}else{return false}">
+                                                    {{-- <a class="btn btn-sm btn-primary " href="{{ route('accounts.show',$child_4->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a> --}}
+                                                    <a class="btn btn-sm btn-success" href="{{ route('accounts.edit',$child_4->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Hapus</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                     @endforeach
                                     @endforeach
                                     @endforeach

@@ -44,11 +44,11 @@
                                     @foreach ($accounts as $i => $account)
                                     <?php $saldo_awal = $account->balance; ?>
                                         <tr>
-                                            <td colspan="6" class="font-weight-bold">{{$account->refAccount->account_code}} - {{$account->refAccount->name}} (Saldo Awal : {{$account->balance_format}})</td>
+                                            <td colspan="6" class="font-weight-bold">{{$account->account_code}} - {{$account->name}} (Saldo Awal : {{$account->balance_format}})</td>
                                         </tr>
                                     @foreach($account->transactions as $transaction)
                                         <tr>
-                                            <td>{{$account->id}}</td>
+                                            <td>{{$transaction->parent?$transaction->parent->transaction_code:$transaction->transaction_code}}</td>
                                             <td>{{$transaction->date->format('d/m/Y')}} - {{$transaction->description??$transaction->parent->description}}</td>
                                             <td>{{$transaction->debt_format}}</td>
                                             <td>{{$transaction->credit_format}}</td>

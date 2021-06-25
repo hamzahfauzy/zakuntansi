@@ -15,29 +15,9 @@ use Illuminate\Support\Facades\DB;
  */
 class TransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function book_id()
-    {
-        return session('book')->id;
-    }
-
     public function index()
     {
-        $accounts = Account::where('book_id',$this->book_id())
-            // ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
-            // ->orderBy('ref_accounts.account_code','asc')
-            // ->select('accounts.*')
-            ->get()->pluck('id')->toArray();
-        $transactions = [];
-        if(!empty($accounts))
-            $transactions = Transaction::whereIn('account_id',$accounts)->whereDoesntHave('parent')->orderBy('date')->get();
-            // $transactions = Transaction::whereIn('account_id',$accounts)->groupby('account_id')->orderByRaw('FIELD(account_id,'.implode(",",$accounts).')')->get();
-        // $transactions = Transaction::whereIn('account_id',$accounts)->orderby('account_id')->paginate();
-
+        $transactions = Transaction::doesntHave('parent')->orderBy('date')->get();
         return view('transaction.index', compact('transactions'))
             ->with('i', 0); //(request()->input('page', 1) - 1) * $transactions->perPage());
     }
@@ -45,11 +25,7 @@ class TransactionController extends Controller
     public function bukuBesar()
     {
         // $all_ref_accounts = RefAccount::doesntHave('childs')->get()->pluck('id');
-        $accounts = Account::where('book_id',$this->book_id())
-                    // ->whereIn('ref_account_id',$all_ref_accounts)
-                    // ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
-                    // ->orderBy('ref_accounts.account_code')
-                    ->get();
+        $accounts = Account::get();
         
         return view('transaction.buku-besar', compact('accounts'));
     }
@@ -74,13 +50,12 @@ class TransactionController extends Controller
     public function create()
     {
         $transaction = new Transaction();
-        $all_ref_accounts = RefAccount::doesntHave('childs')->get()->pluck('id');
-        $accounts = Account::where('book_id',$this->book_id())->whereIn('ref_account_id',$all_ref_accounts)
-                    ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
-                    ->orderBy('ref_accounts.account_code')
-                    ->select('accounts.*',DB::raw("CONCAT(ref_accounts.account_code,' - ',ref_accounts.name) AS ref_account_name"))
-                    ->pluck('ref_account_name','id');
-        return view('transaction.create', compact('transaction','accounts'));
+        $accounts = Account::doesntHave('childs')->select('accounts.*',DB::raw("CONCAT(account_code,' - ',name) AS account_name"))
+                    ->pluck('account_name','id');
+        $kode = [];
+        foreach(Account::doesntHave('childs')->get() as $account)
+            $kode[$account->id] = $account->account_transaction_code;
+        return view('transaction.create', compact('transaction','accounts','kode'));
     }
 
     /**
@@ -119,7 +94,7 @@ class TransactionController extends Controller
             {
                 if($account_id == null) continue;
                 Transaction::create([
-                    'parent_id' => $transaction->id,
+                    'parent_transaction_id' => $transaction->id,
                     'account_id' => $account_id,
                     'date' => $request->date,
                     'debt' => $request->item_tipe[$key] == 'Debt' ? $request->item_nominal[$key] : 0,
@@ -169,14 +144,14 @@ class TransactionController extends Controller
      */
     public function edit(Transaction $transaction)
     {
-        $all_ref_accounts = RefAccount::doesntHave('childs')->get()->pluck('id');
-        $accounts = Account::where('book_id',$this->book_id())->whereIn('ref_account_id',$all_ref_accounts)
-                    ->join('ref_accounts', 'accounts.ref_account_id', '=', 'ref_accounts.id')
-                    ->orderBy('ref_accounts.account_code')
-                    ->select('accounts.*',DB::raw("CONCAT(ref_accounts.account_code,' - ',ref_accounts.name) AS ref_account_name"))
-                    ->pluck('ref_account_name','id');
-
-        return view('transaction.edit', compact('transaction','accounts'));
+        $accounts = Account::doesntHave('childs')->select('accounts.*',DB::raw("CONCAT(account_code,' - ',name) AS account_name"))
+                    ->pluck('account_name','id');
+        $count_transaction = Transaction::count()+1;
+        $count_transaction = $count_transaction < 10 ? '00'.$count_transaction : ($count_transaction < 100 ? '0'.$count_transaction : $count_transaction);
+        $kode = [];
+        foreach(Account::doesntHave('childs')->get() as $account)
+            $kode[$account->id] = $account->account_transaction_code;
+        return view('transaction.edit', compact('transaction','accounts','count_transaction','kode'));
     }
 
     /**
@@ -253,7 +228,7 @@ class TransactionController extends Controller
                 {
                     if($value == null || $value == 'undefined') continue;
                     Transaction::create([
-                        'parent_id' => $transaction->id,
+                        'parent_transaction_id' => $transaction->id,
                         'account_id' => $value,
                         'date' => $request->date,
                         'debt' => $request->item_tipe[$key] == 'Debt' ? $request->item_nominal[$key] : 0,

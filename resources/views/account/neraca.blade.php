@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title',config('app.name', 'Laravel').' - Neraca ('.$book->name.')')
+@section('title',config('app.name', 'Laravel').' - Neraca')
 
 @section('content')
     <div class="container">
@@ -11,7 +11,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                Neraca ({{$book->name}})
+                                Neraca
                             </span>
 
                             @if($accounts)
@@ -61,7 +61,7 @@
                                     ?>
                                         <tr>
 											<td>
-                                                <b>{{ $account->refAccount->account_code }} - {{ $account->refAccount->name }}</b>
+                                                <b>{{ $account->account_code }} - {{ $account->name }}</b>
                                             </td>
 											<td>{{ count($account->childs) ? '-' : $account->t_balance_format }}</td>
                                         </tr>
@@ -71,7 +71,7 @@
                                     ?>
                                         <tr>
 											<td>
-                                                {{ $child_1->refAccount->account_code }} - {{ $child_1->refAccount->name }}<br>
+                                                {{ $child_1->account_code }} - {{ $child_1->name }}<br>
                                             </td>
 											<td>{{ count($child_1->childs) ? '-' : $child_1->t_balance_format }}</td>
                                         </tr>
@@ -81,7 +81,7 @@
                                     ?>
                                         <tr>
 											<td>
-                                                {{ $child_2->refAccount->account_code }} - {{ $child_2->refAccount->name }}<br>
+                                                {{ $child_2->account_code }} - {{ $child_2->name }}<br>
                                             </td>
 											<td>{{ count($child_2->childs) ? '-' : $child_2->t_balance_format }}</td>
                                         </tr>
@@ -91,7 +91,7 @@
                                     ?>
                                         <tr>
 											<td>
-                                                {{ $child_3->refAccount->account_code }} - {{ $child_3->refAccount->name }}<br>
+                                                {{ $child_3->account_code }} - {{ $child_3->name }}<br>
                                             </td>
 											<td>{{ count($child_3->childs) ? '-' : $child_3->t_balance_format }}</td>
                                         </tr>

@@ -22,38 +22,36 @@ Route::middleware('installed')->group(function(){
 
     Route::middleware('auth')->group(function(){
         Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+        Route::get('/home/count-transaction/{transaction_code}/{month}', [App\Http\Controllers\HomeController::class, 'count_transaction'])->name('count_transaction');
 
         Route::resource('books',App\Http\Controllers\BookController::class);
         Route::match(['get','post'],'ref-accounts/import',[App\Http\Controllers\RefAccountController::class,'import'])->name('ref-accounts.import');
         Route::resource('ref-accounts',App\Http\Controllers\RefAccountController::class);
         Route::get('ref-accounts/download',[App\Http\Controllers\RefAccountController::class,'download'])->name('ref-accounts.download');
 
-        Route::middleware('book_session')->group(function(){
-            Route::get('accounts/import',[App\Http\Controllers\AccountController::class,'import'])->name('accounts.import');
-            Route::get('accounts/cetak-neraca',[App\Http\Controllers\AccountController::class,'cetakNeraca'])->name('accounts.cetak-neraca');
-            Route::get('accounts/cetak-laba-rugi',[App\Http\Controllers\AccountController::class,'cetakLabaRugi'])->name('accounts.cetak-laba-rugi');
-            Route::resource('accounts',App\Http\Controllers\AccountController::class);
+        Route::get('accounts/import',[App\Http\Controllers\AccountController::class,'import'])->name('accounts.import');
+        Route::get('accounts/cetak-neraca',[App\Http\Controllers\AccountController::class,'cetakNeraca'])->name('accounts.cetak-neraca');
+        Route::get('accounts/cetak-laba-rugi',[App\Http\Controllers\AccountController::class,'cetakLabaRugi'])->name('accounts.cetak-laba-rugi');
+        Route::resource('accounts',App\Http\Controllers\AccountController::class);
 
-            Route::prefix('transactions')->name('transactions.')->group(function(){
-                Route::get('/',[App\Http\Controllers\TransactionController::class,'index'])->name('index');
-                Route::get('create',[App\Http\Controllers\TransactionController::class,'create'])->name('create');
-                Route::get('edit/{transaction}',[App\Http\Controllers\TransactionController::class,'edit'])->name('edit');
-                Route::post('store',[App\Http\Controllers\TransactionController::class,'store'])->name('store');
-                Route::patch('update/{transaction}',[App\Http\Controllers\TransactionController::class,'update'])->name('update');
-                Route::delete('destroy/{transaction}',[App\Http\Controllers\TransactionController::class,'destroy'])->name('destroy');
-                Route::get('cetak-jurnal',[App\Http\Controllers\TransactionController::class,'cetakJurnal'])->name('cetak-jurnal');
-                Route::get('cetak-buku',[App\Http\Controllers\TransactionController::class,'cetakBuku'])->name('cetak-buku');
-                // Route::resource('transactions',App\Http\Controllers\TransactionController::class);
-                Route::delete('{account_id}/delete',[App\Http\Controllers\TransactionController::class,'delete'])->name('delete');
-            });
-
-            Route::get('buku-besar',[App\Http\Controllers\TransactionController::class,'bukuBesar'])->name('buku-besar');
-            Route::get('neraca',[App\Http\Controllers\AccountController::class,'neraca'])->name('neraca');
-            Route::get('laba-rugi',[App\Http\Controllers\AccountController::class,'labaRugi'])->name('laba-rugi');
-            
-            Route::post('accounts/insert',[App\Http\Controllers\AccountController::class,'insert'])->name('accounts.insert');
-            
+        Route::prefix('transactions')->name('transactions.')->group(function(){
+            Route::get('/',[App\Http\Controllers\TransactionController::class,'index'])->name('index');
+            Route::get('create',[App\Http\Controllers\TransactionController::class,'create'])->name('create');
+            Route::get('edit/{transaction}',[App\Http\Controllers\TransactionController::class,'edit'])->name('edit');
+            Route::post('store',[App\Http\Controllers\TransactionController::class,'store'])->name('store');
+            Route::patch('update/{transaction}',[App\Http\Controllers\TransactionController::class,'update'])->name('update');
+            Route::delete('destroy/{transaction}',[App\Http\Controllers\TransactionController::class,'destroy'])->name('destroy');
+            Route::get('cetak-jurnal',[App\Http\Controllers\TransactionController::class,'cetakJurnal'])->name('cetak-jurnal');
+            Route::get('cetak-buku',[App\Http\Controllers\TransactionController::class,'cetakBuku'])->name('cetak-buku');
+            // Route::resource('transactions',App\Http\Controllers\TransactionController::class);
+            Route::delete('{account_id}/delete',[App\Http\Controllers\TransactionController::class,'delete'])->name('delete');
         });
+
+        Route::get('buku-besar',[App\Http\Controllers\TransactionController::class,'bukuBesar'])->name('buku-besar');
+        Route::get('neraca',[App\Http\Controllers\AccountController::class,'neraca'])->name('neraca');
+        Route::get('laba-rugi',[App\Http\Controllers\AccountController::class,'labaRugi'])->name('laba-rugi');
+        
+        Route::post('accounts/insert',[App\Http\Controllers\AccountController::class,'insert'])->name('accounts.insert');
     });
     
 });

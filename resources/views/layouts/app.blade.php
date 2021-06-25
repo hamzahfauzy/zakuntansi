@@ -61,28 +61,20 @@
                             @endif
                         @else
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('home') }}">{{ __('Dashboard') }}</a>
+                                <a class="nav-link" href="{{ route('accounts.index') }}">{{ __('Akun') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('ref-accounts.index') }}">{{ __('Master Akun') }}</a>
+                                <a class="nav-link" href="{{ route('transactions.index') }}">{{ __('Jurnal') }}</a>
                             </li>
-                            @if (session('book'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('accounts.index') }}">{{ __('Akun Aktif') }}</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('transactions.index') }}">{{ __('Jurnal') }}</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('buku-besar') }}">{{ __('Buku Besar') }}</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('neraca') }}">{{ __('Neraca') }}</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('laba-rugi') }}">{{ __('Laba Rugi') }}</a>
-                                </li>
-                            @endif
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('buku-besar') }}">{{ __('Buku Besar') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('neraca') }}">{{ __('Neraca') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('laba-rugi') }}">{{ __('Laba Rugi') }}</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}

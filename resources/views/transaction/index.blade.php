@@ -66,7 +66,7 @@
                                         <tr>
                                             <td>{{$transaction->transaction_code}}</td>
                                             
-											<td>{{ $transaction->account->refAccount->account_code }} - {{ $transaction->account->refAccount->name }}</td>
+											<td>{{ $transaction->account->account_code }} - {{ $transaction->account->name }}</td>
 											<td>{{ $transaction->debt_format }}</td>
 											<td>{{ $transaction->credit_format }}</td>
                                             <td></td>
@@ -75,7 +75,7 @@
                                         <tr>
                                             <td>{{$transaction->transaction_code}}</td>
                                             
-											<td>{{ $item->account->refAccount->account_code }} - {{ $item->account->refAccount->name }}</td>
+											<td>{{ $item->account->account_code }} - {{ $item->account->name }}</td>
 											<td>{{ $item->debt_format }}</td>
 											<td>{{ $item->credit_format }}</td>
                                             <td></td>

@@ -41,7 +41,7 @@ class Transaction extends Model
      *
      * @var array
      */
-    protected $fillable = ['account_id','parent_id','date','description','debt','credit','transaction_code'];
+    protected $fillable = ['account_id','parent_transaction_id','date','description','debt','credit','transaction_code'];
 
     protected $casts = [
       'date' => 'datetime',
@@ -58,7 +58,7 @@ class Transaction extends Model
 
     public function getBalanceAttribute()
     {
-        $balance = $this->account->refAccount->normal_balance == 'Db' ? $this->debt - $this->credit : $this->credit - $this->debt;
+        $balance = $this->account->normal_balance == 'Db' ? $this->debt - $this->credit : $this->credit - $this->debt;
         return $balance;
     }
 
@@ -80,12 +80,12 @@ class Transaction extends Model
 
     public function items()
     {
-        return $this->hasMany(Transaction::class,'parent_id','id');
+        return $this->hasMany(Transaction::class,'parent_transaction_id','id');
     }
 
     public function parent()
     {
-        return $this->hasOne(Transaction::class,'id','parent_id');
+        return $this->hasOne(Transaction::class,'id','parent_transaction_id');
     }
 
 }

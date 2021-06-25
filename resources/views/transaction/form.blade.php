@@ -2,6 +2,7 @@
     <div class="box-body">
         <div class="form-group">
             <b>Transaksi</b>
+            <input type="hidden" id="accounts_code" value='@json($kode)'>
             @if(count($transaction->items))
             <input type="hidden" id="all_items" value='@json($transaction->items)'>
             @endif
@@ -9,16 +10,16 @@
         <div class="row">
             <div class="col-12 col-md-6">
                 <div class="form-group">
+                    <label for="">Akun</label>
+                    {{ Form::select('account_id', $accounts, $transaction->account_id, ['class' => 'form-control akun','placeholder'=>'- Pilih -','required']) }}
+                </div>
+                <div class="form-group">
                     <label for="">Tanggal</label>
-                    {{ Form::date('date', $transaction->date, ['class' => 'form-control', 'placeholder' => 'Tanggal','required']) }}
+                    {{ Form::date('date', $transaction->date, ['class' => 'form-control form-tanggal', 'placeholder' => 'Tanggal','required']) }}
                 </div>
                 <div class="form-group">
                     <label for="">Kode</label>
-                    {{ Form::text('transaction_code', $transaction->transaction_code, ['class' => 'form-control', 'placeholder' => 'Kode Transaksi','required']) }}
-                </div>
-                <div class="form-group">
-                    <label for="">Akun</label>
-                    {{ Form::select('account_id', $accounts, $transaction->account_id, ['class' => 'form-control select2','placeholder'=>'- Pilih -','required']) }}
+                    {{ Form::text('transaction_code', $transaction->transaction_code, ['class' => 'form-control kode-transaksi', 'placeholder' => 'Kode Transaksi','required']) }}
                 </div>
             </div>
             <div class="col-12 col-md-6">
@@ -31,8 +32,8 @@
                     {{ Form::select('tipe', ['Debt'=>'Debt','Credit'=>'Credit'], $transaction->debt==0?'Credit':'Debt', ['class' => 'form-control','placeholder'=>'- Pilih -','required']) }}
                 </div>
                 <div class="form-group">
-                    <label for="">Nominal</label>
-                    {{ Form::number('nominal', $transaction->debt==0?$transaction->credit:$transaction->debt, ['class' => 'form-control', 'placeholder' => 'Nominal','required']) }}
+                    <label for="">Nominal (<span id="nominal">{{$transaction->debt||$transaction->credit?'Rp '.number_format($transaction->debt??$transaction->credit):0}}</span>)</label>
+                    {{ Form::number('nominal', $transaction->debt||$transaction->credit?($transaction->debt??$transaction->credit):0, ['class' => 'form-control nominal', 'placeholder' => 'Nominal','required']) }}
                 </div>
             </div>
         </div>
@@ -43,10 +44,10 @@
             <table class="table table-bordered" id="table-jurnal">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th>Tipe</th>
+                        <th>No</th>
                         <th>Akun</th>
                         <th>Nominal</th>
+                        <th>Tipe</th>
                         <th style="display:none"></th>
                     </tr>
                 </thead>
@@ -56,13 +57,13 @@
 
                         </td>
                         <td width="20%">
-                            {{ Form::select('item_tipe[]', ['Debt'=>'Debt','Credit'=>'Credit'], '', ['class' => 'form-control','placeholder'=>'- Pilih -']) }}
-                        </td>
-                        <td width="20%">
-                            {{ Form::select('item_account_id[]', $accounts, '', ['class' => 'form-control select2','placeholder'=>'- Pilih -']) }}
+                            {{ Form::select('item_account_id[]', $accounts, '', ['class' => 'form-control','placeholder'=>'- Pilih -']) }}
                         </td>
                         <td width="50%">
-                            {{ Form::number('item_nominal[]', 0, ['class' => 'form-control', 'placeholder' => 'Nominal']) }}
+                            {{ Form::number('item_nominal[]', 0, ['class' => 'form-control all_nominal', 'placeholder' => 'Nominal','onkeyup' => 'calculateAllNominal()']) }}
+                        </td>
+                        <td width="20%">
+                            {{ Form::select('item_tipe[]', ['Debt'=>'Debt','Credit'=>'Credit'], 'Debt', ['class' => 'form-control','placeholder'=>'- Pilih -']) }}
                         </td>
                         <td style="display:none">
                             <input type="hidden" name="item_id[]" value="" class="transaction_item_ids">
@@ -73,7 +74,7 @@
         </div>
     </div>
     <div class="box-footer mt20">
-        <button type="submit" class="btn btn-primary">Simpan</button>
+        <button type="submit" class="btn btn-primary btn-submit">Simpan</button>
         <button class="btn btn-success" type="button" onclick="addRow()">Tambah Data</button>
     </div>
 </div>
@@ -82,6 +83,53 @@
 </div>
 @section('script')
 <script>
+document.querySelector('.form-tanggal').addEventListener('change',e => {
+    updateKode()
+})
+document.querySelector('.akun').addEventListener('change',e => {
+    updateKode()
+})
+document.querySelector('.nominal').addEventListener('change',e => {
+    var nominal = e.target.value
+    var formatter = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+
+        // These options are needed to round to whole numbers if that's what you want.
+        minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+        maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+    });
+    document.querySelector('#nominal').innerHTML = formatter.format(nominal)
+})
+function updateKode()
+{
+    var akun = document.querySelector('.akun').value
+    var tanggal = document.querySelector('.form-tanggal').value
+    if(akun == '' || tanggal == '') return
+    var accounts_code = document.querySelector('#accounts_code').value
+    accounts_code = JSON.parse(accounts_code)
+    tanggal = tanggal.substring(5,7)
+
+    fetch('/home/count-transaction/'+accounts_code[akun]+'/'+tanggal)
+    .then(res => res.json())
+    .then(res => {
+        document.querySelector('.kode-transaksi').value = res.code // accounts_code[akun]+'/'+tanggal+'/$count_transaction'
+    })
+
+}
+function calculateAllNominal()
+{
+    var all_nominal = document.querySelectorAll('.all_nominal')
+    var nominal_value = 0
+    all_nominal.forEach((el,idx) => {
+        nominal_value += parseInt(el.value)
+    })
+
+    if(nominal_value > document.querySelector('.nominal').value)
+        document.querySelector('.btn-submit').disabled = true
+    else
+        document.querySelector('.btn-submit').disabled = false
+}
 function addRow(val = false)
 {
     var table = document.getElementById('table-jurnal');
@@ -106,31 +154,38 @@ function addRow(val = false)
                     newcell.childNodes[1].value = val[i]??"";
                     newcell.childNodes[1].required = true
                     break;
+            case "number":
+                    newcell.childNodes[1].value = val[i]??0;
+                    newcell.childNodes[1].required = true
+                    break;
             case "checkbox":
                     newcell.childNodes[1].checked = val[i]??false;
                     newcell.childNodes[1].required = true
                     break;
             case "select-one":
-                    if(newcell.childNodes[1].classList.contains('select2'))
-                    {
-                        newcell.innerHTML = document.getElementById('accounts_element').innerHTML
-                        if(val == false)
-                            newcell.childNodes[1].value = ''
-                        else
-                            newcell.childNodes[1].value = val[i]??0;
-
-                        newcell.childNodes[1].required = true
-                        newcell.childNodes[1].name = 'item_account_id[]'
-                        newcell.childNodes[1].classList.add('select2')
-                        $(newcell.childNodes[1]).select2()
-                        // select2reinit()
-                    }
-                    else
-                    {
-                        newcell.childNodes[1].value = val[i];
-                        newcell.childNodes[1].required = true
-                    }
+                    newcell.childNodes[1].value = val[i]??newcell.childNodes[1].value;
+                    newcell.childNodes[1].required = true
                     break;
+                    // if(newcell.childNodes[1].classList.contains('select2'))
+                    // {
+                    //     newcell.innerHTML = document.getElementById('accounts_element').innerHTML
+                    //     if(val == false)
+                    //         newcell.childNodes[1].value = ''
+                    //     else
+                    //         newcell.childNodes[1].value = val[i]??0;
+
+                    //     newcell.childNodes[1].required = true
+                    //     newcell.childNodes[1].name = 'item_account_id[]'
+                    //     newcell.childNodes[1].classList.add('select2')
+                    //     $(newcell.childNodes[1]).select2()
+                    //     // select2reinit()
+                    // }
+                    // else
+                    // {
+                    //     newcell.childNodes[1].value = val[i];
+                    //     newcell.childNodes[1].required = true
+                    // }
+                    // break;
             case "date":
                     newcell.childNodes[1].value = val[i]??'';
                     newcell.childNodes[1].required = true
@@ -186,7 +241,7 @@ function deleteFirstRow()
 var all_transactions = document.querySelector('#all_items').value
 all_transactions = JSON.parse(all_transactions)
 all_transactions.forEach((transaction,idx) => {
-    addRow(['',transaction.debt==0?'Credit':'Debt',transaction.account_id,transaction.debt==0?transaction.credit:transaction.debt,transaction.id])
+    addRow(['',transaction.account_id,transaction.debt==0?transaction.credit:transaction.debt,transaction.debt==0?'Credit':'Debt',transaction.id])
 })
 deleteRow(1)
 @endif

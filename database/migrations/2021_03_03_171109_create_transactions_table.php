@@ -16,17 +16,17 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('account_id')->constrained()->onDelete('cascade');
-            $table->bigInteger('parent_id')->unsigned()->nullable();
+            $table->bigInteger('parent_transaction_id')->unsigned()->nullable();
             $table->date('date')->nullable();
             $table->string('transaction_code')->nullable();
             $table->text('description')->nullable();
-            $table->decimal('debt',15,2);
-            $table->decimal('credit',15,2);
+            $table->decimal('debt',15,2)->default(0);
+            $table->decimal('credit',15,2)->default(0);
             $table->timestamps();
         });
 
         Schema::table('transactions', function (Blueprint $table) {
-            $table->foreign('parent_id')->references('id')->on('transactions')->onDelete('cascade');
+            $table->foreign('parent_transaction_id')->references('id')->on('transactions')->onDelete('cascade');
         });
     }
 

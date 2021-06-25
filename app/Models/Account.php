@@ -25,8 +25,11 @@ class Account extends Model
 {
     
     static $rules = [
-		'book_id' => 'required',
-		'ref_account_id' => 'required',
+		'account_code' => 'required',
+		'account_transaction_code' => 'required',
+		'name' => 'required',
+		'pos' => 'required',
+		'normal_balance' => 'required',
 		'balance' => 'required',
 		// 'debt' => 'required',
 		// 'credit' => 'required',
@@ -44,34 +47,24 @@ class Account extends Model
      *
      * @var array
      */
-    protected $fillable = ['book_id','ref_account_id','balance'];
+    protected $fillable = ['parent_account_id','account_code','account_transaction_code','name','balance','pos','normal_balance','balance'];
 
+    // public function getChildsAttribute()
+    // {
+    //     $parent_childs = $this->childs()->pluck('id');
+    //     $active_childs = Account::whereIn('parent_account_id',$parent_childs)->get();
+    //     return $active_childs;
+    //     // return $parent_childs;
+    // }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function book()
+    public function childs()
     {
-        return $this->hasOne('App\Models\Book', 'id', 'book_id');
-    }
-    
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function refAccount()
-    {
-        return $this->hasOne('App\Models\RefAccount', 'id', 'ref_account_id');
+        return $this->hasMany('App\Models\Account', 'parent_account_id', 'id');
     }
 
-    public function getChildsAttribute()
+    public function parent()
     {
-        $book_id = $this->book_id;
-        $parent_childs = $this->refAccount->childs()->pluck('id');
-        $active_childs = Account::where('book_id',$book_id)->whereIn('ref_account_id',$parent_childs)->get();
-        return $active_childs;
-
-
-        // return $parent_childs;
+        return $this->hasOne('App\Models\Account', 'id', 'parent_account_id');
     }
     
     /**
@@ -104,13 +97,13 @@ class Account extends Model
 
     public function getTNetAttribute()
     {
-        $balance = $this->refAccount->normal_balance == 'Db' ? $this->t_debt - $this->t_credit : $this->t_credit - $this->t_debt;
+        $balance = $this->normal_balance == 'Db' ? $this->t_debt - $this->t_credit : $this->t_credit - $this->t_debt;
         return $balance;
     }
 
     public function getTBalanceAttribute()
     {
-        $balance = $this->refAccount->normal_balance == 'Db' ? $this->t_debt - $this->t_credit : $this->t_credit - $this->t_debt;
+        $balance = $this->normal_balance == 'Db' ? $this->t_debt - $this->t_credit : $this->t_credit - $this->t_debt;
         return $this->balance + $balance;
     }
 
@@ -122,7 +115,7 @@ class Account extends Model
 
     // public function getBalanceAttribute()
     // {
-    //     $balance = $this->refAccount->normal_balance == 'Db' ? $this->debt - $this->credit : $this->credit - $this->debt;
+    //     $balance = $this->normal_balance == 'Db' ? $this->debt - $this->credit : $this->credit - $this->debt;
     //     return $balance;
     // }
 
@@ -166,7 +159,9 @@ class Account extends Model
 
     function balance_format()
     {
-        return $this->balance_from_child() ? number_format($this->balance_from_child()) : 0;
+        $balance_from_child = $this->balance_from_child();
+        $balance_from_child_format = $balance_from_child >= 0 ? number_format($balance_from_child) : "(".number_format(abs($balance_from_child)).")";
+        return $balance_from_child ? $balance_from_child_format : $this->t_balance_format;
     }
     
 

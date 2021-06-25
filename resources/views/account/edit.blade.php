@@ -13,14 +13,14 @@
 
                 <div class="card card-default">
                     <div class="card-header">
-                        <span class="card-title">Update Akun ({{$account->refAccount->account_code}} - {{$account->refAccount->name}})</span>
+                        <span class="card-title">Update Akun ({{$account->account_code}} - {{$account->name}})</span>
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ route('accounts.update', $account->id) }}"  role="form" enctype="multipart/form-data">
                             {{ method_field('PATCH') }}
                             @csrf
 
-                            @include('account.form-edit')
+                            @include('account.form')
 
                         </form>
                     </div>
