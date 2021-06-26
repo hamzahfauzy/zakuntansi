@@ -108,7 +108,7 @@
                                             <td>{{++$key}}</td>
                                             <td>{{$transaction->date->format('d/m/Y')}}</td>
                                             <td>{{$transaction->parent->transaction_code}}</td>
-                                            <td>{{$transaction->account->account_code.' - '.$transaction->account->name}}</td>
+                                            <td>{{$transaction->parent->account->account_code.' - '.$transaction->parent->account->name}}</td>
                                             <td>{{$transaction->parent->description}}</td>
                                             <td>{{number_format($transaction->debt)}}</td>
                                             <td>{{number_format($transaction->credit)}}</td>
