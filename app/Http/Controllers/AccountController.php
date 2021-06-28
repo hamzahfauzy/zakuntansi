@@ -115,24 +115,58 @@ class AccountController extends Controller
         return view('account.cetak-laba-rugi', compact('accounts'));
     }
 
-    public function import()
+    public function import(Request $request)
     {
-        return;
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        // Account::truncate();
-        $all_current_accounts = Account::get('id');
-        $all_master_accounts = RefAccount::whereNotIn('id',$all_current_accounts)->get();
-        foreach($all_master_accounts as $account)
-        {
-            Account::create([
-                'book_id' => $book_id,
-                'ref_account_id' => $account->id,
-                'debt' => 0,
-                'credit' => 0,
-            ]);
+        $file = $request->file;
+        $extension = $file->extension();
+        if($extension=='xlsx'){
+            $inputFileType = 'Xlsx';
+        }else{
+            $inputFileType = 'Xls';
+        }
+        $reader     = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+         
+        $spreadsheet = $reader->load($file->getPathName());
+        $worksheet   = $spreadsheet->getActiveSheet();
+        $highestRow  = $worksheet->getHighestRow();
+        $highestColumn = $worksheet->getHighestColumn();
+        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+
+        $status = [
+            'success' => 'Berhasil import data akun'
+        ];
+
+        DB::beginTransaction();
+        try {
+            for ($row = 2; $row <= $highestRow; $row++) {
+                $parent_account_id = NULL;
+                $parent_account = Account::where('account_code',$worksheet->getCellByColumnAndRow(2, $row)->getValue());
+                if($parent_account->exists())
+                    $parent_account_id = $parent_account->first()->id;
+
+                Account::updateOrCreate([
+                    'account_code' => $worksheet->getCellByColumnAndRow(1, $row)->getValue()
+                ],[
+                    'parent_account_id' => $parent_account_id,
+                    'account_code' => $worksheet->getCellByColumnAndRow(1, $row)->getValue(),
+                    'account_transaction_code' => $worksheet->getCellByColumnAndRow(3, $row)->getValue(),
+                    'name' => $worksheet->getCellByColumnAndRow(4, $row)->getValue(),
+                    'pos' => $worksheet->getCellByColumnAndRow(5, $row)->getValue(),
+                    'normal_balance' => $worksheet->getCellByColumnAndRow(6, $row)->getValue(),
+                    'balance' => $worksheet->getCellByColumnAndRow(7, $row)->getValue(),
+                ]);
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            throw $th;
+            $status = [
+                'fail' => 'Gagal import data akun'
+            ];
+            DB::rollback();
         }
 
-        return redirect()->route('accounts.index')->with('success','Berhasil import seluruh data akun');
+        return redirect()->route('accounts.index')->with($status);
     }
 
     /**

@@ -29,7 +29,7 @@ Route::middleware('installed')->group(function(){
         Route::resource('ref-accounts',App\Http\Controllers\RefAccountController::class);
         Route::get('ref-accounts/download',[App\Http\Controllers\RefAccountController::class,'download'])->name('ref-accounts.download');
 
-        Route::get('accounts/import',[App\Http\Controllers\AccountController::class,'import'])->name('accounts.import');
+        Route::post('accounts/import',[App\Http\Controllers\AccountController::class,'import'])->name('accounts.import');
         Route::get('accounts/cetak-neraca',[App\Http\Controllers\AccountController::class,'cetakNeraca'])->name('accounts.cetak-neraca');
         Route::get('accounts/cetak-laba-rugi',[App\Http\Controllers\AccountController::class,'cetakLabaRugi'])->name('accounts.cetak-laba-rugi');
         Route::resource('accounts',App\Http\Controllers\AccountController::class);

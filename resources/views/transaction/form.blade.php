@@ -130,10 +130,9 @@ function calculateAllNominal()
         else
             nominal_value -= parseInt(el.value)
     })
-
-    if(nominal_value > document.querySelector('.nominal').value)
-        document.querySelector('.btn-submit').disabled = true
-    else
+    
+    document.querySelector('.btn-submit').disabled = true
+    if(nominal_value == document.querySelector('.nominal').value)
         document.querySelector('.btn-submit').disabled = false
 }
 function addRow(val = false)
@@ -250,6 +249,7 @@ all_transactions.forEach((transaction,idx) => {
     addRow(['',transaction.account_id,transaction.debt==0?transaction.credit:transaction.debt,transaction.debt==0?'Credit':'Debt',transaction.id])
 })
 deleteRow(1)
+calculateAllNominal()
 @endif
 </script>
 @endsection

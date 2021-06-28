@@ -22,8 +22,11 @@
                                 <a href="{{ route('accounts.create') }}" class="btn btn-primary btn-sm">
                                   {{ __('Tambah Akun') }}
                                 </a>
-                                <a href="{{ route('accounts.import') }}" class="btn btn-success btn-sm" onclick="if(confirm('Apakah anda yakin akan mengimport seluruh data akun?')){return true}else{return false}">
+                                <a href="javascript:void(0)" class="btn btn-success btn-sm" onclick="file.click()">
                                     {{ __('Import Akun') }}
+                                </a>
+                                <a href="{{ url()->to('files/format-import.xlsx') }}" class="btn btn-success btn-sm">
+                                    {{ __('Download Format Import') }}
                                 </a>
                               </div>
                         </div>
@@ -35,11 +38,12 @@
                     @endif
 
                     <div class="card-body">
-                        {{-- <b>Keterangan :</b><br>
-                        Nrc = Neraca, 
-                        Lr = Laba Rugi, 
-                        Debt = Debit, 
-                        Cr = Kredit --}}
+                        <div class="d-none">
+                            <form action="{{ route('accounts.import') }}" id="importFile" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="file" id="file" onchange="importFile.submit()">
+                            </form>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <thead class="thead">
@@ -49,7 +53,6 @@
 										<th>Akun</th>
 										<th width="150px">POS</th>
 										<th width="150px">Saldo Normal</th>
-										<th width="120px">Saldo</th>
 
                                         <th>Aksi</th>
                                     </tr>
@@ -69,7 +72,6 @@
                                             </td>
 											<td>{{ $account->pos }}</td>
 											<td>{{ $account->normal_balance }}</td>
-											<td>{{ $account->balance_format() }}</td>
 
                                             <td>
                                                 <form action="{{ route('accounts.destroy',$account->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $account->account_code }} ?')){return true}else{return false}">
@@ -90,7 +92,6 @@
                                             </td>
 											<td>{{ $child_1->pos }}</td>
 											<td>{{ $child_1->normal_balance }}</td>
-											<td>{{ $child_1->balance_format() }}</td>
 
                                             <td>
                                                 <form action="{{ route('accounts.destroy',$child_1->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_1->account_code }} ?')){return true}else{return false}">
@@ -113,7 +114,6 @@
                                             </td>
 											<td>{{ $child_2->pos }}</td>
 											<td>{{ $child_2->normal_balance }}</td>
-											<td>{{ $child_2->balance_format() }}</td>
 
                                             <td>
                                                 <form action="{{ route('accounts.destroy',$child_2->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_2->account_code }} ?')){return true}else{return false}">
@@ -137,7 +137,6 @@
                                             </td>
 											<td>{{ $child_3->pos }}</td>
 											<td>{{ $child_3->normal_balance }}</td>
-											<td>{{ $child_3->balance_format() }}</td>
 
                                             <td>
                                                 <form action="{{ route('accounts.destroy',$child_3->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_3->account_code }} ?')){return true}else{return false}">
@@ -162,7 +161,6 @@
                                             </td>
 											<td>{{ $child_4->pos }}</td>
 											<td>{{ $child_4->normal_balance }}</td>
-											<td>{{ $child_4->balance_format() }}</td>
 
                                             <td>
                                                 <form action="{{ route('accounts.destroy',$child_4->id) }}" method="POST" onsubmit="if(confirm('Apakah anda yakin akan menghapus akun {{ $child_4->account_code }} ?')){return true}else{return false}">
