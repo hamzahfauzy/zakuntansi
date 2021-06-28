@@ -26,19 +26,19 @@ class TransactionController extends Controller
 
     public function bukuBesar()
     {
-        $all_accounts = Account::doesntHave('childs')->orderby('account_code')->select('accounts.*',DB::raw("CONCAT(account_code,' - ',name) AS account_name"))
+        $all_accounts = Account::orderby('account_code')->orderby('account_code')->select('accounts.*',DB::raw("CONCAT(account_code,' - ',name) AS account_name"))
         ->pluck('account_name','id');
         $accounts = [];
         if(isset($_GET['from']) && isset($_GET['to']))
         {
-            $accounts = Account::doesntHave('childs')->with(['transactions'=>function($q) {
+            $accounts = Account::with(['transactions'=>function($q) {
                 $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
             }]);
 
             if(isset($_GET['account_id']) && !empty($_GET['account_id']))
-                $accounts = $accounts->where('id',$_GET['account_id']);
+                $accounts = $accounts->where('id',$_GET['account_id'])->orwhere('parent_account_id',$_GET['account_id']);
 
-            $accounts = $accounts->get();
+            $accounts = $accounts->orderby('account_code')->get();
         }
         
         return view('transaction.buku-besar', compact('all_accounts','accounts'));
@@ -49,14 +49,14 @@ class TransactionController extends Controller
         $accounts = [];
         if(isset($_GET['from']) && isset($_GET['to']))
         {
-            $accounts = Account::doesntHave('childs')->with(['transactions'=>function($q) {
+            $accounts = Account::with(['transactions'=>function($q) {
                 $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
             }]);
 
             if(isset($_GET['account_id']) && !empty($_GET['account_id']))
-                $accounts = $accounts->where('id',$_GET['account_id']);
+                $accounts = $accounts->where('id',$_GET['account_id'])->orwhere('parent_account_id',$_GET['account_id']);
 
-            $accounts = $accounts->get();
+            $accounts = $accounts->orderby('account_code')->get();
         }
 
         return view('transaction.cetak-buku', compact('accounts'));

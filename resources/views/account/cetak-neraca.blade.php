@@ -19,7 +19,7 @@
                 <td>
                     <b>{{ $account->account_code }} - {{ $account->name }}</b>
                 </td>
-                <td>{{ count($account->childs) ? '-' : $account->t_balance_format }}</td>
+                <td>{{ $account->balance_format() }}</td>
             </tr>
         @foreach ($account->childs as $child_1)
         <?php 
@@ -55,10 +55,12 @@
         @endforeach
         @endforeach
             <tr>
-                <td>
-                    Total Saldo
+                <td colspan="2">
+                <center>
+                    ---------
+                </center>
                 </td>
-                <td>{{$account->balance_format()}}</td>
+                {{-- <td>{{$account->balance_format()}}</td> --}}
             </tr>
         @endforeach
     </tbody>

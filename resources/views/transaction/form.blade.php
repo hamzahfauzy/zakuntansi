@@ -33,12 +33,12 @@
                 </div>
                 <div class="form-group">
                     <label for="">Nominal (<span id="nominal">{{$transaction->debt||$transaction->credit?'Rp '.number_format($transaction->debt>0?$transaction->debt:$transaction->credit):0}}</span>)</label>
-                    {{ Form::number('nominal', $transaction->debt||$transaction->credit?($transaction->debt>0?$transaction->debt:$transaction->credit):0, ['class' => 'form-control nominal', 'placeholder' => 'Nominal','required']) }}
+                    {{ Form::number('nominal', $transaction->debt||$transaction->credit?($transaction->debt>0?$transaction->debt:$transaction->credit):0, ['class' => 'form-control nominal', 'placeholder' => 'Nominal','required','min'=>0]) }}
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <b>Lawan Transaksi</b>
+            <b>Lawan Transaksi (Sisa : <span id="sisa_nominal">0</span>)</b>
         </div>
         <div class="form-group">
             <table class="table table-bordered" id="table-jurnal">
@@ -60,7 +60,7 @@
                             {{ Form::select('item_account_id[]', $accounts, '', ['class' => 'form-control','placeholder'=>'- Pilih -']) }}
                         </td>
                         <td width="50%">
-                            {{ Form::number('item_nominal[]', 0, ['class' => 'form-control all_nominal', 'placeholder' => 'Nominal','onkeyup' => 'calculateAllNominal()']) }}
+                            {{ Form::number('item_nominal[]', 0, ['class' => 'form-control all_nominal', 'placeholder' => 'Nominal','onkeyup' => 'calculateAllNominal()','min'=>0, 'onfocus'=>'putSisaNominal(this)']) }}
                         </td>
                         <td width="20%">
                             {{ Form::select('item_tipe[]', ['Debt'=>'Debt','Credit'=>'Credit'], 'Debt', ['class' => 'form-control item_types','placeholder'=>'- Pilih -']) }}
@@ -83,6 +83,7 @@
 </div>
 @section('script')
 <script>
+var sisa_nominal = 0
 document.querySelector('.form-tanggal').addEventListener('change',e => {
     updateKode()
 })
@@ -100,6 +101,7 @@ document.querySelector('.nominal').addEventListener('change',e => {
         maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
     });
     document.querySelector('#nominal').innerHTML = formatter.format(nominal)
+    calculateAllNominal()
 })
 function updateKode()
 {
@@ -134,6 +136,30 @@ function calculateAllNominal()
     document.querySelector('.btn-submit').disabled = true
     if(nominal_value == document.querySelector('.nominal').value)
         document.querySelector('.btn-submit').disabled = false
+
+    var trx_value = parseInt(document.querySelector('.nominal').value)
+    var sisa = trx_value - nominal_value
+    console.log(sisa)
+    if(isNaN(sisa)) sisa = 0
+    sisa_nominal = sisa
+
+    updateSisaNominal()
+}
+function updateSisaNominal()
+{
+    document.getElementById('sisa_nominal').innerHTML = (new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+
+        // These options are needed to round to whole numbers if that's what you want.
+        minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+        maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+    })).format(sisa_nominal)
+}
+function putSisaNominal(el)
+{
+    if(el.value == '' || el.value == 0)
+        el.value = sisa_nominal
 }
 function addRow(val = false)
 {
