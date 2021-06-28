@@ -49,7 +49,7 @@ class TransactionController extends Controller
         $accounts = [];
         if(isset($_GET['from']) && isset($_GET['to']))
         {
-            $accounts = Account::with(['transactions'=>function($q) {
+            $accounts = Account::doesntHave('childs')->with(['transactions'=>function($q) {
                 $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
             }]);
 
