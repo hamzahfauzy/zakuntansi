@@ -33,7 +33,7 @@
                 </div>
                 <div class="form-group">
                     <label for="">Nominal (<span id="nominal">{{$transaction->debt||$transaction->credit?'Rp '.number_format($transaction->debt>0?$transaction->debt:$transaction->credit):0}}</span>)</label>
-                    {{ Form::number('nominal', $transaction->debt||$transaction->credit?($transaction->debt>0?$transaction->debt:$transaction->credit):0, ['class' => 'form-control nominal', 'placeholder' => 'Nominal','required','min'=>0]) }}
+                    {{ Form::number('nominal', $transaction->debt||$transaction->credit?($transaction->debt>0?$transaction->debt:$transaction->credit):0, ['class' => 'form-control nominal', 'placeholder' => 'Nominal','required','min'=>0,'onblur'=>'calculateAllNominal()']) }}
                 </div>
             </div>
         </div>
