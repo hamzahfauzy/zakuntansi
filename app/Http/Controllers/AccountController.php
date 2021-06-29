@@ -139,6 +139,7 @@ class AccountController extends Controller
         DB::beginTransaction();
         try {
             for ($row = 2; $row <= $highestRow; $row++) {
+                if($worksheet->getCellByColumnAndRow(2, $row)->getValue() == '') break;
                 $parent_account_id = NULL;
                 $parent_account = Account::where('account_code',$worksheet->getCellByColumnAndRow(2, $row)->getValue());
                 if($parent_account->exists())

@@ -124,6 +124,7 @@ function calculateAllNominal()
     var all_nominal = document.querySelectorAll('.all_nominal')
     var item_tipe = document.querySelectorAll('.item_types')
     console.log(item_tipe)
+    var nominal_trx = document.querySelector('.nominal').value
     var nominal_value = 0
     all_nominal.forEach((el,idx) => {
         var i_tipe = item_tipe[idx].value
@@ -132,9 +133,11 @@ function calculateAllNominal()
         else
             nominal_value -= parseInt(el.value)
     })
+
+    console.log(nominal_value, nominal_trx)
     
     document.querySelector('.btn-submit').disabled = true
-    if(nominal_value == document.querySelector('.nominal').value)
+    if(nominal_value == nominal_trx)
         document.querySelector('.btn-submit').disabled = false
 
     var trx_value = parseInt(document.querySelector('.nominal').value)
