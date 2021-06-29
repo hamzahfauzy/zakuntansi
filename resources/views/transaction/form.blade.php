@@ -163,6 +163,8 @@ function putSisaNominal(el)
 {
     if(el.value == '' || el.value == 0)
         el.value = sisa_nominal
+
+        calculateAllNominal()
 }
 function addRow(val = false)
 {
