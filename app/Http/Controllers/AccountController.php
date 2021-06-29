@@ -29,7 +29,7 @@ class AccountController extends Controller
 
     public function neraca()
     {
-        $header_account = Account::doesntHave('parent')->select(DB::Raw('CONCAT(account_code," - ",name) as account_name'),'id')->orderby('account_code')->get()->pluck('account_name','id');
+        $header_account = Account::doesntHave('parent')->where('pos','Nrc')->select(DB::Raw('CONCAT(account_code," - ",name) as account_name'),'id')->orderby('account_code')->get()->pluck('account_name','id');
         // $header_account = RefAccount::whereDoesntHave('refAccount')->get()->pluck('name','id');
         $accounts = [];
         $neraca = [];
