@@ -55,6 +55,10 @@
                                 <a href="{{ route('transactions.cetak-buku',$_GET) }}" target="_blank" class="btn btn-success btn-sm">
                                     {{ __('Cetak') }}
                                 </a>
+
+                                <a href="{{ route('transactions.export-buku',$_GET) }}" target="_blank" class="btn btn-success btn-sm">
+                                    {{ __('Export') }}
+                                </a>
                             </div>
                         </div>
                     </div>

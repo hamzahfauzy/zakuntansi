@@ -62,6 +62,220 @@ class TransactionController extends Controller
         return view('transaction.cetak-buku', compact('accounts'));
     }
 
+    public function exportBuku()
+    {
+        header('Content-Type: text/csv; charset=utf-8'); 
+
+        header('Content-Disposition: attachment; filename=data.csv'); 
+
+        $output = fopen("php://output", "w"); 
+
+        $accounts = Account::with(['transactions'=>function($q) {
+            $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
+        }]);
+
+        if(isset($_GET['account_id']) && !empty($_GET['account_id']))
+            $accounts = $accounts->where('id',$_GET['account_id'])->orwhere('parent_account_id',$_GET['account_id']);
+
+        $accounts = $accounts->orderby('account_code')->get();
+
+        
+
+        fputcsv($output, [
+            'No',
+            'Tanggal',
+            'Nomor Bukti',
+            'Referensi',
+            'Uraian',
+            'Debit',
+            'Kredit',
+            'Saldo Akhir'
+        ],';'); 
+        
+
+        foreach ($accounts as $i => $account)
+        {
+            fputcsv($output, [
+                '',
+                '',
+                $account->account_code,
+                '',
+                $account->name . ' - Saldo Awal ('.$account->balance_format.')',
+                '',
+                '',
+                $account->balance_format(),
+            ],';'); 
+            foreach($account->childs as $k => $acc)
+            {
+                fputcsv($output, [
+                    '',
+                    '',
+                    $acc->account_code,
+                    '',
+                    $acc->name . ' - Saldo Awal ('.$acc->balance_format.')',
+                    '',
+                    '',
+                    $acc->balance_format(),
+                ],';'); 
+                if($acc->transactions()->exists())
+                {
+                    $saldo_awal = $acc->balance;
+                    $t_debt = 0;
+                    $t_credit = 0;
+
+                    foreach($acc->transactions as $key => $transaction)
+                    {
+                        foreach($transaction->items as $t)
+                        {
+                            if($t->debt > 0)
+                                $saldo_awal -= $t->balance;
+
+                            fputcsv($output, [
+                                ++$key,
+                                $transaction->date->format('d/m/Y'),
+                                $t->parent->transaction_code,
+                                $t->account->account_code.' - '.$t->account->name,
+                                $t->parent->description,
+                                number_format($t->debt),
+                                number_format($t->credit),
+                                number_format($saldo_awal)
+                            ],';'); 
+
+                            $t_debt += $t->debt;
+                            $t_credit += $t->credit;
+                        }
+
+                        if($transaction->parent)
+                        {
+                            fputcsv($output, [
+                                ++$key,
+                                $transaction->date->format('d/m/Y'),
+                                $transaction->parent->transaction_code,
+                                $transaction->parent->account->account_code.' - '.$transaction->parent->account->name,
+                                $transaction->parent->description,
+                                number_format($transaction->debt),
+                                number_format($transaction->credit),
+                                '-'
+                            ],';'); 
+                        }
+                    }
+                }
+                else
+                {
+                    foreach($acc->childs as $idx => $acc2):
+                        fputcsv($output, [
+                            '',
+                            '',
+                            $acc2->account_code,
+                            '',
+                            $acc2->name.' - Saldo Awal ('.$acc2->balance_format.')',
+                            '',
+                            '',
+                            $acc2->balance_format()
+                        ],';');
+
+                        if($acc2->transactions()->exists()):
+                            $saldo_awal = $acc2->balance;
+                            $t_debt = 0;
+                            $t_credit = 0;
+                            foreach($acc2->transactions as $key => $transaction):
+                                foreach($transaction->items as $t):
+                                    if($t->debt > 0)
+                                        $saldo_awal -= $t->balance;
+
+                                    fputcsv($output, [
+                                        ++$key,
+                                        $transaction->date->format('d/m/Y'),
+                                        $t->parent->transaction_code,
+                                        $t->account->account_code.' - '.$t->account->name,
+                                        $t->parent->description,
+                                        number_format($t->debt),
+                                        number_format($t->credit),
+                                        number_format($saldo_awal)
+                                    ],';');
+                                    $t_debt += $t->debt;
+                                    $t_credit += $t->credit;
+                                endforeach;
+                                if($transaction->parent):
+                                    fputcsv($output, [
+                                        ++$key,
+                                        $transaction->date->format('d/m/Y'),
+                                        $transaction->parent->transaction_code,
+                                        $transaction->parent->account->account_code.' - '.$transaction->parent->account->name,
+                                        $transaction->parent->description,
+                                        number_format($transaction->debt),
+                                        number_format($transaction->credit),
+                                        '-'
+                                    ],';');
+                                endif;
+                            endforeach;
+                        else:
+                            foreach($acc2->childs as $idx3 => $acc3):
+                                fputcsv($output, [
+                                    '',
+                                    '',
+                                    $acc3->account_code,
+                                    '',
+                                    $acc3->name.' - Saldo Awal ('.$acc3->balance_format.')',
+                                    '',
+                                    '',
+                                    $acc3->balance_format()
+                                ],';');
+                                if($acc3->transactions()->exists()):
+                                    $saldo_awal = $acc3->balance;
+                                    $t_debt = 0;
+                                    $t_credit = 0;
+                                    
+                                    foreach($acc3->transactions as $key => $transaction):
+                                        foreach($transaction->items as $t):
+                                            if($t->debt > 0)
+                                                $saldo_awal -= $t->balance;
+                                            fputcsv($output, [
+                                                ++$key,
+                                                $transaction->date->format('d/m/Y'),
+                                                $t->parent->transaction_code,
+                                                $t->account->account_code.' - '.$t->account->name,
+                                                $t->parent->description,
+                                                number_format($t->debt),
+                                                number_format($t->credit),
+                                                number_format($saldo_awal)
+                                            ],';');
+                                            $t_debt += $t->debt;
+                                            $t_credit += $t->credit;
+                                        endforeach;
+                                        if($transaction->parent):
+                                            fputcsv($output, [
+                                                ++$key,
+                                                $transaction->date->format('d/m/Y'),
+                                                $transaction->parent->transaction_code,
+                                                $transaction->parent->account->account_code.' - '.$transaction->parent->account->name,
+                                                $transaction->parent->description,
+                                                number_format($transaction->debt),
+                                                number_format($transaction->credit),
+                                                '-'
+                                            ],';');
+                                        endif;
+                                    endforeach;
+                                endif;
+                            endforeach;
+                        endif;
+                    endforeach;
+                }
+            }
+            fputcsv($output, [
+                '-',
+                '-',
+                '-',
+                '-',
+                '-',
+                '-',
+                '-',
+                '-'
+            ],';');
+        }
+        fclose($output); 
+    }
+
     /**
      * Show the form for creating a new resource.
      *

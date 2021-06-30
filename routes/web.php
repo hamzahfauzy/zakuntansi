@@ -43,6 +43,7 @@ Route::middleware('installed')->group(function(){
             Route::delete('destroy/{transaction}',[App\Http\Controllers\TransactionController::class,'destroy'])->name('destroy');
             Route::get('cetak-jurnal',[App\Http\Controllers\TransactionController::class,'cetakJurnal'])->name('cetak-jurnal');
             Route::get('cetak-buku',[App\Http\Controllers\TransactionController::class,'cetakBuku'])->name('cetak-buku');
+            Route::get('export-buku',[App\Http\Controllers\TransactionController::class,'exportBuku'])->name('export-buku');
             // Route::resource('transactions',App\Http\Controllers\TransactionController::class);
             Route::delete('{account_id}/delete',[App\Http\Controllers\TransactionController::class,'delete'])->name('delete');
         });
