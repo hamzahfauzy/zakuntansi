@@ -156,10 +156,13 @@ class Account extends Model
         {
             if(count($child->childs))
             {
+                $temp_balance = $child->balance_from_child();
                 if($child->normal_balance == 'Db')
-                    $balance += $child->balance_from_child();
+                    $balance += $temp_balance;
                 else
-                    $balance -= $child->balance_from_child();
+                {
+                    $balance -= $temp_balance;
+                }
             }
             else
             {
