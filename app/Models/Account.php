@@ -155,10 +155,15 @@ class Account extends Model
         foreach($childs as $child)
         {
             if(count($child->childs))
-                $balance += $child->balance_from_child();
+            {
+                if($child->normal_balance == 'Db')
+                    $balance += $child->balance_from_child();
+                else
+                    $balance -= $child->balance_from_child();
+            }
             else
             {
-                if($this->normal_balance == 'Db')
+                if($child->normal_balance == 'Db')
                     $balance += $child->t_balance;
                 else
                     $balance -= $child->t_balance;
