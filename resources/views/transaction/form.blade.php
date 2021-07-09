@@ -29,7 +29,7 @@
                 </div>
                 <div class="form-group">
                     <label for="">Tipe</label>
-                    {{ Form::select('tipe', ['Debt'=>'Debt','Credit'=>'Credit'], $transaction->debt==0?'Credit':'Debt', ['class' => 'form-control','placeholder'=>'- Pilih -','required']) }}
+                    {{ Form::select('tipe', ['Debt'=>'Debt','Credit'=>'Credit'], $transaction->debt==0?'Credit':'Debt', ['class' => 'form-control trx_tipe','placeholder'=>'- Pilih -','required']) }}
                 </div>
                 <div class="form-group">
                     <label for="">Nominal (<span id="nominal">{{$transaction->debt||$transaction->credit?'Rp '.number_format($transaction->debt>0?$transaction->debt:$transaction->credit):0}}</span>)</label>
@@ -123,15 +123,26 @@ function calculateAllNominal()
 {
     var all_nominal = document.querySelectorAll('.all_nominal')
     var item_tipe = document.querySelectorAll('.item_types')
+    var trx_tipe = document.querySelectorAll('.trx_tipe').value
     console.log(item_tipe)
     var nominal_trx = document.querySelector('.nominal').value
     var nominal_value = 0
     all_nominal.forEach((el,idx) => {
         var i_tipe = item_tipe[idx].value
-        if(i_tipe == 'Debt')
-            nominal_value += parseInt(el.value)
+        if(trx_tipe == 'Debt')
+        {
+            if(i_tipe == 'Debt')
+                nominal_value += parseInt(el.value)
+            else
+                nominal_value -= parseInt(el.value)
+        }
         else
-            nominal_value -= parseInt(el.value)
+        {
+            if(i_tipe == 'Debt')
+                nominal_value -= parseInt(el.value)
+            else
+                nominal_value += parseInt(el.value)
+        }
     })
 
     console.log(nominal_value, nominal_trx)
