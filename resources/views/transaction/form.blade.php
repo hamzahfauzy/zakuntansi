@@ -146,6 +146,7 @@ function calculateAllNominal()
     })
 
     console.log(nominal_value, nominal_trx)
+    nominal_value = Math.abs(nominal_value)
     
     document.querySelector('.btn-submit').disabled = true
     if(nominal_value == nominal_trx)
