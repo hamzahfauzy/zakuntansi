@@ -246,6 +246,7 @@ function addRow(val = false)
 
 function deleteRow(row_id) {
     document.getElementById('row_'+row_id).remove()
+    calculateAllNominal()
 }
 
 function deleteFirstRow()
