@@ -127,6 +127,7 @@ function calculateAllNominal()
     console.log(item_tipe)
     var nominal_trx = document.querySelector('.nominal').value
     var nominal_value = 0
+    var nominal_value_lawan = 0
     all_nominal.forEach((el,idx) => {
         var i_tipe = item_tipe[idx].value
         if(trx_tipe == 'Debt')
@@ -134,26 +135,23 @@ function calculateAllNominal()
             if(i_tipe == 'Debt')
                 nominal_value += parseInt(el.value)
             else
-                nominal_value -= parseInt(el.value)
+                nominal_value_lawan += parseInt(el.value)
         }
         else
         {
             if(i_tipe == 'Debt')
-                nominal_value -= parseInt(el.value)
+                nominal_value_lawan += parseInt(el.value)
             else
                 nominal_value += parseInt(el.value)
         }
     })
-
-    console.log(nominal_value, nominal_trx)
-    nominal_value = Math.abs(nominal_value)
     
     document.querySelector('.btn-submit').disabled = true
-    if(nominal_value == nominal_trx)
+    if(nominal_value_lawan == nominal_trx && (nominal_value == 0 || nominal_value == nominal_trx))
         document.querySelector('.btn-submit').disabled = false
 
     var trx_value = parseInt(document.querySelector('.nominal').value)
-    var sisa = trx_value - nominal_value
+    var sisa = trx_value - nominal_value_lawan
     console.log(sisa)
     if(isNaN(sisa)) sisa = 0
     sisa_nominal = sisa
