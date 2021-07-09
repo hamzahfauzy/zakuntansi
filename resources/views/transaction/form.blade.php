@@ -123,7 +123,7 @@ function calculateAllNominal()
 {
     var all_nominal = document.querySelectorAll('.all_nominal')
     var item_tipe = document.querySelectorAll('.item_types')
-    var trx_tipe = document.querySelectorAll('.trx_tipe').value
+    var trx_tipe = document.querySelector('.trx_tipe').value
     console.log(item_tipe)
     var nominal_trx = document.querySelector('.nominal').value
     var nominal_value = 0
