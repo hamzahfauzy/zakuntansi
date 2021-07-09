@@ -284,6 +284,9 @@ class TransactionController extends Controller
     public function create()
     {
         $transaction = new Transaction();
+        $last_transaction = Transaction::orderby('created_at','DESC')->first();
+        if($last_transaction)
+            $transaction->account_id = $last_transaction->account_id;
         $accounts = Account::doesntHave('childs')->select('accounts.*',DB::raw("CONCAT(account_code,' - ',name) AS account_name"))
                     ->pluck('account_name','id');
         $kode = [];
