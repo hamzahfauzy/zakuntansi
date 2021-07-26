@@ -80,7 +80,7 @@ class Transaction extends Model
 
     public function items()
     {
-        return $this->hasMany(Transaction::class,'parent_transaction_id','id');
+        return $this->hasMany(Transaction::class,'parent_transaction_id','id')->orderby('date','asc');
     }
 
     public function parent()

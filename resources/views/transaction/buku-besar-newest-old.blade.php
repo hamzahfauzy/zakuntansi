@@ -90,31 +90,30 @@
                                         <td></td>
                                         <td class="font-weight-bold">{{$account->balance_format()}}</td>
                                     </tr>
-                                    @if(count($account->all_transactions()))
+                                    @if($account->transactions()->exists())
                                         <?php $saldo_awal = $account->balance; ?>
                                         <?php $t_debt = 0; ?>
                                         <?php $t_credit = 0; ?>
-                                        @foreach($account->all_transactions() as $key => $transaction)
-                                            @if($transaction->items()->exists())
-                                                @foreach($transaction->items as $t)
-                                                    <?php
-                                                    if($t->debt > 0)
-                                                        $saldo_awal -= $t->balance;
-                                                    ?>
-                                                    <tr class="parent{{$i}}Content collapse pointer" data-parent="#parent{{$account->id}}">
-                                                        <td>{{++$key}}</td>
-                                                        <td>{{$transaction->date->format('d/m/Y')}}</td>
-                                                        <td>{{$t->parent->transaction_code}}</td>
-                                                        <td>{{$t->account->account_code.' - '.$t->account->name}}</td>
-                                                        <td>{{$t->parent->description}}</td>
-                                                        <td>{{number_format($t->debt)}}</td>
-                                                        <td>{{number_format($t->credit)}}</td>
-                                                        <td>{{number_format($saldo_awal)}}</td>
-                                                    </tr>
-                                                    <?php $t_debt += $t->debt ?>
-                                                    <?php $t_credit += $t->credit ?>
-                                                @endforeach
-                                            @else
+                                        @foreach($account->transactions as $key => $transaction)
+                                            @foreach($transaction->items as $t)
+                                                <?php
+                                                if($t->debt > 0)
+                                                    $saldo_awal -= $t->balance;
+                                                ?>
+                                                <tr class="parent{{$i}}Content collapse pointer" data-parent="#parent{{$account->id}}">
+                                                    <td>{{++$key}}</td>
+                                                    <td>{{$transaction->date->format('d/m/Y')}}</td>
+                                                    <td>{{$t->parent->transaction_code}}</td>
+                                                    <td>{{$t->account->account_code.' - '.$t->account->name}}</td>
+                                                    <td>{{$t->parent->description}}</td>
+                                                    <td>{{number_format($t->debt)}}</td>
+                                                    <td>{{number_format($t->credit)}}</td>
+                                                    <td>{{number_format($saldo_awal)}}</td>
+                                                </tr>
+                                                <?php $t_debt += $t->debt ?>
+                                                <?php $t_credit += $t->credit ?>
+                                            @endforeach
+                                            @if($transaction->parent)
                                             <tr class="parent{{$i}}Content collapse pointer" data-parent="#parent{{$account->id}}">
                                                 <td>{{++$key}}</td>
                                                 <td>{{$transaction->date->format('d/m/Y')}}</td>
@@ -139,31 +138,30 @@
                                                 <td></td>
                                                 <td class="font-weight-bold">{{$acc->balance_format()}}</td>
                                             </tr>
-                                            @if(count($acc->all_transactions()))
+                                            @if($acc->transactions()->exists())
                                                 <?php $saldo_awal = $acc->balance; ?>
                                                 <?php $t_debt = 0; ?>
                                                 <?php $t_credit = 0; ?>
-                                                @foreach($acc->all_transactions() as $key => $transaction)
-                                                    @if($transaction->items()->exists())
-                                                        @foreach($transaction->items as $t)
-                                                            <?php
-                                                            if($t->debt > 0)
-                                                                $saldo_awal -= $t->balance;
-                                                            ?>
-                                                            <tr class="childContent{{$acc->id}} collapse pointer" data-parent="#parent{{$acc->id}}">
-                                                                <td>{{++$key}}</td>
-                                                                <td>{{$transaction->date->format('d/m/Y')}}</td>
-                                                                <td>{{$t->parent->transaction_code}}</td>
-                                                                <td>{{$t->account->account_code.' - '.$t->account->name}}</td>
-                                                                <td>{{$t->parent->description}}</td>
-                                                                <td>{{number_format($t->debt)}}</td>
-                                                                <td>{{number_format($t->credit)}}</td>
-                                                                <td>{{number_format($saldo_awal)}}</td>
-                                                            </tr>
-                                                            <?php $t_debt += $t->debt ?>
-                                                            <?php $t_credit += $t->credit ?>
-                                                        @endforeach
-                                                    @else
+                                                @foreach($acc->transactions as $key => $transaction)
+                                                    @foreach($transaction->items as $t)
+                                                        <?php
+                                                        if($t->debt > 0)
+                                                            $saldo_awal -= $t->balance;
+                                                        ?>
+                                                        <tr class="childContent{{$acc->id}} collapse pointer" data-parent="#parent{{$acc->id}}">
+                                                            <td>{{++$key}}</td>
+                                                            <td>{{$transaction->date->format('d/m/Y')}}</td>
+                                                            <td>{{$t->parent->transaction_code}}</td>
+                                                            <td>{{$t->account->account_code.' - '.$t->account->name}}</td>
+                                                            <td>{{$t->parent->description}}</td>
+                                                            <td>{{number_format($t->debt)}}</td>
+                                                            <td>{{number_format($t->credit)}}</td>
+                                                            <td>{{number_format($saldo_awal)}}</td>
+                                                        </tr>
+                                                        <?php $t_debt += $t->debt ?>
+                                                        <?php $t_credit += $t->credit ?>
+                                                    @endforeach
+                                                    @if($transaction->parent)
                                                     <tr class="childContent{{$acc->id}} collapse pointer" data-parent="#parent{{$acc->id}}">
                                                         <td>{{++$key}}</td>
                                                         <td>{{$transaction->date->format('d/m/Y')}}</td>
@@ -188,31 +186,30 @@
                                                         <td></td>
                                                         <td class="font-weight-bold">{{$acc2->balance_format()}}</td>
                                                     </tr>
-                                                    @if(count($acc2->all_transactions()))
+                                                    @if($acc2->transactions()->exists())
                                                         <?php $saldo_awal = $acc2->balance; ?>
                                                         <?php $t_debt = 0; ?>
                                                         <?php $t_credit = 0; ?>
-                                                        @foreach($acc2->all_transactions() as $key => $transaction)
-                                                            @if($transaction->items()->exists())
-                                                                @foreach($transaction->items as $t)
-                                                                    <?php
-                                                                    if($t->debt > 0)
-                                                                        $saldo_awal -= $t->balance;
-                                                                    ?>
-                                                                    <tr class="childContent{{$acc2->id}} collapse pointer" data-parent="#parent{{$acc2->id}}">
-                                                                        <td>{{++$key}}</td>
-                                                                        <td>{{$transaction->date->format('d/m/Y')}}</td>
-                                                                        <td>{{$t->parent->transaction_code}}</td>
-                                                                        <td>{{$t->account->account_code.' - '.$t->account->name}}</td>
-                                                                        <td>{{$t->parent->description}}</td>
-                                                                        <td>{{number_format($t->debt)}}</td>
-                                                                        <td>{{number_format($t->credit)}}</td>
-                                                                        <td>{{number_format($saldo_awal)}}</td>
-                                                                    </tr>
-                                                                    <?php $t_debt += $t->debt ?>
-                                                                    <?php $t_credit += $t->credit ?>
-                                                                @endforeach
-                                                            @else
+                                                        @foreach($acc2->transactions as $key => $transaction)
+                                                            @foreach($transaction->items as $t)
+                                                                <?php
+                                                                if($t->debt > 0)
+                                                                    $saldo_awal -= $t->balance;
+                                                                ?>
+                                                                <tr class="childContent{{$acc2->id}} collapse pointer" data-parent="#parent{{$acc2->id}}">
+                                                                    <td>{{++$key}}</td>
+                                                                    <td>{{$transaction->date->format('d/m/Y')}}</td>
+                                                                    <td>{{$t->parent->transaction_code}}</td>
+                                                                    <td>{{$t->account->account_code.' - '.$t->account->name}}</td>
+                                                                    <td>{{$t->parent->description}}</td>
+                                                                    <td>{{number_format($t->debt)}}</td>
+                                                                    <td>{{number_format($t->credit)}}</td>
+                                                                    <td>{{number_format($saldo_awal)}}</td>
+                                                                </tr>
+                                                                <?php $t_debt += $t->debt ?>
+                                                                <?php $t_credit += $t->credit ?>
+                                                            @endforeach
+                                                            @if($transaction->parent)
                                                             <tr class="childContent{{$acc2->id}} collapse pointer" data-parent="#parent{{$acc2->id}}">
                                                                 <td>{{++$key}}</td>
                                                                 <td>{{$transaction->date->format('d/m/Y')}}</td>
@@ -237,32 +234,31 @@
                                                                 <td></td>
                                                                 <td class="font-weight-bold">{{$acc3->balance_format()}}</td>
                                                             </tr>
-                                                            @if(count($acc3->all_transactions()))
+                                                            @if($acc3->transactions()->exists())
                                                                 <?php $saldo_awal = $acc3->balance; ?>
                                                                 <?php $t_debt = 0; ?>
                                                                 <?php $t_credit = 0; ?>
                                                                 
-                                                                @foreach($acc3->all_transactions() as $key => $transaction)
-                                                                    @if($transaction->items()->exists())
-                                                                        @foreach($transaction->items as $t)
-                                                                            <?php
-                                                                            if($t->debt > 0)
-                                                                                $saldo_awal -= $t->balance;
-                                                                            ?>
-                                                                            <tr class="childContent{{$acc3->id}} collapse pointer" data-parent="#parent{{$acc3->id}}">
-                                                                                <td>{{++$key}}</td>
-                                                                                <td>{{$transaction->date->format('d/m/Y')}}</td>
-                                                                                <td>{{$t->parent->transaction_code}}</td>
-                                                                                <td>{{$t->account->account_code.' - '.$t->account->name}}</td>
-                                                                                <td>{{$t->parent->description}}</td>
-                                                                                <td>{{number_format($t->debt)}}</td>
-                                                                                <td>{{number_format($t->credit)}}</td>
-                                                                                <td>{{number_format($saldo_awal)}}</td>
-                                                                            </tr>
-                                                                            <?php $t_debt += $t->debt ?>
-                                                                            <?php $t_credit += $t->credit ?>
-                                                                        @endforeach
-                                                                    @else
+                                                                @foreach($acc3->transactions as $key => $transaction)
+                                                                    @foreach($transaction->items as $t)
+                                                                        <?php
+                                                                        if($t->debt > 0)
+                                                                            $saldo_awal -= $t->balance;
+                                                                        ?>
+                                                                        <tr class="childContent{{$acc3->id}} collapse pointer" data-parent="#parent{{$acc3->id}}">
+                                                                            <td>{{++$key}}</td>
+                                                                            <td>{{$transaction->date->format('d/m/Y')}}</td>
+                                                                            <td>{{$t->parent->transaction_code}}</td>
+                                                                            <td>{{$t->account->account_code.' - '.$t->account->name}}</td>
+                                                                            <td>{{$t->parent->description}}</td>
+                                                                            <td>{{number_format($t->debt)}}</td>
+                                                                            <td>{{number_format($t->credit)}}</td>
+                                                                            <td>{{number_format($saldo_awal)}}</td>
+                                                                        </tr>
+                                                                        <?php $t_debt += $t->debt ?>
+                                                                        <?php $t_credit += $t->credit ?>
+                                                                    @endforeach
+                                                                    @if($transaction->parent)
                                                                     <tr class="childContent{{$acc3->id}} collapse pointer" data-parent="#parent{{$acc3->id}}">
                                                                         <td>{{++$key}}</td>
                                                                         <td>{{$transaction->date->format('d/m/Y')}}</td>

@@ -77,6 +77,26 @@ class Account extends Model
         return $this->hasMany('App\Models\Transaction', 'account_id', 'id');
     }
 
+    public function all_transactions()
+    {
+        if(isset($_GET['from']) && isset($_GET['to']))
+        {
+            $transactions = Transaction::where('account_id',$this->id)->whereBetween('date',[$_GET['from'],$_GET['to']])
+                            ->orWhere('id',$this->parent_account_id)->whereBetween('date',[$_GET['from'],$_GET['to']])
+                            ->orderby('date','asc')
+                            ->get();
+        }
+        else
+        {
+            $transactions = Transaction::where('account_id',$this->id)
+                            ->orWhere('id',$this->parent_account_id)
+                            ->orderby('date','asc')
+                            ->get();
+        }
+
+        return $transactions;
+    }
+
     public function getTDebtAttribute()
     {
         if(isset($_GET['from']) && isset($_GET['to']))
