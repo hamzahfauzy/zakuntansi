@@ -19,8 +19,8 @@ class TransactionController extends Controller
     {
         $transactions = Transaction::doesntHave('parent')->orderBy('date','desc')->exists() ? [Transaction::doesntHave('parent')->orderBy('date','desc')->first()] : [];
         if(isset($_GET['from']) && isset($_GET['to']))
-            $transactions = Transaction::doesntHave('parent')->whereBetween('date',$_GET)->orderBy('date')->get();
-        return view('transaction.index', compact('transactions'))
+            $transactions = Transaction::whereBetween('date',$_GET)->orderBy('account_id','asc')->orderBy('date')->get();
+        return view('transaction.jurnal', compact('transactions'))
             ->with('i', 0); //(request()->input('page', 1) - 1) * $transactions->perPage());
     }
 
@@ -509,8 +509,8 @@ class TransactionController extends Controller
     {
         $transactions = Transaction::doesntHave('parent')->orderBy('date','desc')->exists() ? [Transaction::doesntHave('parent')->orderBy('date','desc')->first()] : [];
         if(isset($_GET['from']) && isset($_GET['to']))
-            $transactions = Transaction::doesntHave('parent')->whereBetween('date',$_GET)->orderBy('date')->get();
-        return view('transaction.cetak-jurnal', compact('transactions'))
+            $transactions = Transaction::whereBetween('date',$_GET)->orderby('account_id','asc')->orderBy('date')->get();
+        return view('transaction.cetak-jurnal-v2', compact('transactions'))
             ->with('i', 0); //(request()->input('page', 1) - 1) * $transactions->perPage());
     }
 }
