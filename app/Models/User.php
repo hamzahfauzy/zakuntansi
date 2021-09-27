@@ -32,6 +32,12 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    static $rules = [
+        'name' => 'required',
+        'email' => 'required',
+        'password' => 'nullable',
+    ];
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -49,5 +55,40 @@ class User extends Authenticatable
     public function getInstallationAttribute()
     {
         return Installation::first();
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class,'user_roles');
+    }
+
+    public function hasRole($role) 
+    {
+        return $this->roles()->where('name', $role)->count() == 1;
+    }
+
+    public function hasRoles($roles) 
+    {
+        return $this->roles()->whereIn('name', $roles)->exists();
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class);
+    }
+
+    public function bills()
+    {
+        return $this->hasMany('App\Models\Bill', 'user_id', 'id');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany('App\Models\Payment', 'user_id', 'id');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Transaction;
 use App\Models\Installation;
@@ -56,11 +57,16 @@ class HomeController extends Controller
                 'logo' => $logo,
             ]);
 
-            User::create([
+            $user = User::create([
                 'name' => $request->company_name,
                 'email' => $request->email,
                 'password' => $request->password,
             ]);
+
+            $role = Role::where('name','Master')->first();
+
+            $user->roles()->sync([$role->id]);
+
             return redirect()->route('home');
         }
         return view('installation');

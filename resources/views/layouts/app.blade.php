@@ -60,6 +60,7 @@
                                 </li>
                             @endif
                         @else
+                            @if(auth()->user()->hasRole('Master'))
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('accounts.index') }}">{{ __('Akun') }}</a>
                             </li>
@@ -82,6 +83,40 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('laba-rugi') }}">{{ __('Laba Rugi') }}</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('category-type-accounts.index') }}">{{ __('Transaction Type') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('users.index') }}">{{ __('Users') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('roles.index') }}">{{ __('Role') }}</a>
+                            </li>
+                            @endif
+                            @if(auth()->user()->hasRole('Operator'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('categories.index') }}">{{ __('Transaction Categories') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('merchants.index') }}">{{ __('Merchant') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('teachers.index') }}">{{ __('Teacher') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('students.index') }}">{{ __('Student') }}</a>
+                            </li>
+                            @endif
+                            @if(auth()->user()->hasRole('Bendahara'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('bills.index') }}">{{ __('Bills') }}</a>
+                            </li>
+                            @endif
+                            @if(auth()->user()->hasRole('Kasir'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('payments.index') }}">{{ __('Payments') }}</a>
+                            </li>
+                            @endif
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}

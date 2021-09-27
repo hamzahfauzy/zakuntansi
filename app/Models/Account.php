@@ -196,11 +196,16 @@ class Account extends Model
         return $balance;
     }
 
-    function balance_format()
+    function balance_plain()
     {
         $balance_from_child = $this->balance_from_child();
-        $balance_from_child_format = $balance_from_child >= 0 ? number_format($balance_from_child) : "(".number_format(abs($balance_from_child)).")";
-        return $balance_from_child ? $balance_from_child_format : $this->t_balance_format;
+        return $balance_from_child != 0 ? $balance_from_child : $this->t_balance;
+    }
+
+    function balance_format()
+    {
+        $balance = $this->balance_plain();
+        return $balance >= 0 ? number_format($balance) : "(".number_format(abs($balance)).")";
     }
     
 

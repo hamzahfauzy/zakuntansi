@@ -49,7 +49,7 @@ class AccountController extends Controller
             $modal = Account::with(['transactions'=>function($q) {
                 $q->whereBetween('transactions.date',[$_GET['from'],$_GET['to']]);
             }])->where('id',$_GET['account']['modal'])->first();
-            $saldo = ($activa ? $activa->balance_from_child() : 0) - (($hutang?$hutang->balance_from_child():0) + ($modal?$modal->balance_from_child():0));
+            $saldo = ($activa ? $activa->balance_plain() : 0) - (($hutang?$hutang->balance_plain():0) + ($modal?$modal->balance_plain():0));
 
             $neraca = [
                 'aktiva' => $activa?$activa->balance_format():0,

@@ -1,9 +1,9 @@
 {
     "Installation" : "Instalasi",
-    "Company Name" : "Nama Perusahaan",
+    "Company Name" : "Nama Instansi",
     "Phone Number" : "No. Telepon/Handphone",
     "Address"      : "Alamat",
-    "Company Email": "Email Perusahaan",
+    "Company Email": "Email Instansi",
     "Postal Code"  : "Kode Pos",
     "Username"     : "Nama Pengguna",
     "Password"     : "Kata Sandi",
@@ -19,5 +19,18 @@
     "credit"       : "Kredit",
     "balance"      : "Saldo Awal",
 
-    "Create Account" : "Buat Akun"
+    "Create Account" : "Buat Akun",
+    "Transaction Categories"   : "Kategori Transaksi",
+    "Transaction Type"   : "Jenis Transaksi",
+    "Category Type Account"   : "Jenis Transaksi",
+    "Account"   : "Akun",
+
+    "Users"    : "Pengguna",
+    "Payments" : "Pembayaran",
+    "Payment"  : "Pembayaran",
+    "Bills"    : "Tagihan",
+    "Bill"     : "Tagihan",
+    "Teacher"  : "Guru / Pegawai",
+    "Student"  : "Siswa",
+    "Generate Bills"     : "Generate Tagihan"
 }
