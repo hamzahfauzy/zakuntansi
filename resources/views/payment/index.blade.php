@@ -64,6 +64,7 @@
 										<th>Nama</th>
 										<th>Staff</th>
 										<th>Total</th>
+										<th>Tanggal</th>
 
                                         <th></th>
                                     </tr>
@@ -77,19 +78,25 @@
 											<td>{{ $payment->user->name.' - '.$payment->user->email }}</td>
 											<td>{{ $payment->staff->name }}</td>
 											<td>{{ $payment->total }}</td>
+											<td>{{ $payment->created_at }}</td>
 
                                             <td>
+                                                @if(auth()->user()->hasRole('Kasir'))
+                                                <a href="{{route('payments.cetak',['user'=>$payment->user->id,'date'=>$payment->created_at->format('Y-m-d')])}}" class="btn btn-success btn-sm btn-block mb-2"><i class="fa fa-fw fa-print"></i> Cetak</a>
+                                                @endif
+                                                
                                                 @if(auth()->user()->hasRole('Bendahara'))
                                                 <form action="{{ route('payments.destroy',$payment->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Delete</button>
+                                                    <button type="submit" class="btn btn-danger btn-block btn-sm"><i class="fa fa-fw fa-trash"></i> Delete</button>
                                                 </form>
                                                 @else
                                                 -
                                                 @endif
                                             </td>
                                         </tr>
+
                                     @endforeach
                                 </tbody>
                             </table>

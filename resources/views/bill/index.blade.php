@@ -40,6 +40,7 @@
 										<th>Merchant</th>
 										<th>Tahun</th>
 										<th>Total</th>
+										<th>Sisa</th>
 										<th>Jatuh Tempo</th>
 										<th>Status</th>
 
@@ -55,6 +56,7 @@
 											<td>{{ $bill->merchant->name }}</td>
 											<td>{{ $bill->year }}</td>
 											<td>{{ $bill->total_formatted }}</td>
+											<td>{{ $bill->sisa }}</td>
 											<td>{{ $bill->due_date }}</td>
 											<td>{!! $bill->status_label !!}</td>
 

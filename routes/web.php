@@ -36,6 +36,7 @@ Route::middleware('installed')->group(function(){
         });
 
         Route::middleware('role:Kasir')->group(function(){
+            Route::get('payments/cetak/{user}/{date}',[App\Http\Controllers\PaymentController::class,'cetak'])->name("payments.cetak");
             Route::resource('payments',App\Http\Controllers\PaymentController::class);
         });
         

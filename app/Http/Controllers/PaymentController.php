@@ -32,6 +32,13 @@ class PaymentController extends Controller
             ->with('i', (request()->input('page', 1) - 1) * $payments->perPage());
     }
 
+    function cetak($user,$date){
+        $usr = User::find($user);
+        $payments = Payment::where('user_id',$user)->where('created_at','like','%'.$date.'%')->get();
+
+        return view("payment.cetak",compact('payments','usr','date'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -54,19 +61,29 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate(Payment::$rules);
         $request['staff_id'] = auth()->user()->id;
-
+        
         // get payment
-        $bill = Bill::where('user_id',$request->user_id)->where('id',$request->bill_id)->first();
+        
+        foreach($request['payment'] as $p){
 
-        $payment = Payment::where('user_id',$request->user_id)->where('bill_id',$request->bill_id)->sum('total');
-        $total_payment = $payment+$request->total;
-        if($bill->total-$total_payment == 0)
-            $bill->update(['status'=>'LUNAS']);
-        else
-            $bill->update(['status'=>'BELUM LUNAS']);
-        $payment = Payment::create($request->all());
+            $bill = Bill::where('user_id',$request->user_id)->where('id',$p['bill_id'])->first();
+            $payment = Payment::where('user_id',$request->user_id)->where('bill_id',$p['bill_id'])->sum('total');
+
+            $total_payment = $payment+$p['total'];
+             
+            if($bill->total-$total_payment == 0)
+                $bill->update(['status'=>'LUNAS']);
+            else
+                $bill->update(['status'=>'BELUM LUNAS']);
+
+            $payment = Payment::create([
+                'staff_id'=>$request->staff_id,
+                'user_id'=>$request->user_id,
+                'bill_id'=>$p['bill_id'],
+                'total'=>$p['total'],
+            ]);
+        }
 
         return redirect()->route('payments.index')
             ->with('success', 'Payment created successfully.');

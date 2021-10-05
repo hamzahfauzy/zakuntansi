@@ -59,6 +59,16 @@ class Bill extends Model
         return $this->hasOne('App\Models\User', 'id', 'user_id');
     }
 
+    public function payments(){
+        return $this->hasMany(Payment::class);
+    }
+
+    
+    public function getSisaAttribute()
+    {
+        return number_format($this->total - $this->payments->sum('total'));
+    }
+
     public function getTotalFormattedAttribute()
     {
         return number_format($this->total);
