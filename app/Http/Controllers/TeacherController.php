@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class TeacherController
@@ -35,6 +36,73 @@ class TeacherController extends Controller
     {
         $teacher = new Teacher();
         return view('teacher.create', compact('teacher'));
+    }
+
+    public function import(Request $request)
+    {
+        if ($request->isMethod("POST")) {
+            $file = $request->file('import');
+            $extension = $file->extension();
+            if ($extension == 'xlsx') {
+                $inputFileType = 'Xlsx';
+            } else {
+                $inputFileType = 'Xls';
+            }
+            $reader     = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+
+            $spreadsheet = $reader->load($file->getPathName());
+            $worksheet   = $spreadsheet->getActiveSheet();
+            $highestRow  = $worksheet->getHighestRow();
+
+            $status = [
+                'success' => 'Berhasil import data akun'
+            ];
+
+            DB::beginTransaction();
+            try {
+                
+                for ($row = 2; $row <= $highestRow; $row++) {
+                    $no = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                    $nik = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+                    $name = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                    
+                    if ($name == '' || $nik == '' || $no == '') break;
+
+                    $user = User::create([
+                        'name' => $name,
+                        'email' => $nik,
+                        'password' => $nik,
+                    ]);
+
+                    $role = Role::where('name','Guru / Pegawai')->first();
+                    $user->roles()->sync([$role->id]);
+
+                    $arr = [
+                        'user_id'=>$user->id,
+                        'name' => $name,
+                        'NIK' => $nik,
+                    ];
+
+                    Teacher::create($arr);
+                }
+
+                $status = [
+                    'success' => 'Sukses import data akun'
+                ];
+
+                DB::commit();
+            } catch (\Throwable $th) {
+                throw $th;
+                $status = [
+                    'fail' => 'Gagal import data akun'
+                ];
+                DB::rollback();
+            }
+
+            return redirect()->route('teachers.index')->with($status);
+        }
+
+        return view('teacher.import');
     }
 
     /**

@@ -16,8 +16,14 @@
                                 {{ __('Student') }}
                             </span>
 
-                             <div class="float-right">
-                                <a href="{{ route('students.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
+                            <div class="float-right">
+                                <a href="{{ asset("format/format-siswa.xlsx") }}" class="btn btn-warning btn-sm" >
+                                  {{ __('Format Import') }}
+                                </a>
+                                <a href="{{ route('students.import') }}" class="btn btn-success btn-sm" >
+                                  {{ __('Import') }}
+                                </a>
+                                <a href="{{ route('students.create') }}" class="btn btn-primary btn-sm">
                                   {{ __('Create New') }}
                                 </a>
                               </div>

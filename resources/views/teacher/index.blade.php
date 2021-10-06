@@ -17,7 +17,13 @@
                             </span>
 
                              <div class="float-right">
-                                <a href="{{ route('teachers.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
+                                <a href="{{ asset("format/format-guru.xlsx") }}" class="btn btn-warning btn-sm" >
+                                  {{ __('Format Import') }}
+                                </a>
+                                <a href="{{ route('teachers.import') }}" class="btn btn-success btn-sm" >
+                                  {{ __('Import') }}
+                                </a>
+                                <a href="{{ route('teachers.create') }}" class="btn btn-primary btn-sm" >
                                   {{ __('Create New') }}
                                 </a>
                               </div>
