@@ -17,6 +17,9 @@
                             </span>
 
                             <div>
+                                <a href="{{route('bills.import')}}" class="btn btn-success btn-sm"> Import</a>
+                                <a href="{{route('bills.export')}}" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-print"></i> Export</a>
+
                                 <a href="{{ route('bills.create') }}" class="btn btn-primary btn-sm">
                                     {{ __('Create New') }}
                                 </a>

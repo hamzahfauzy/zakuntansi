@@ -109,6 +109,9 @@
                             @endif
                             @if(auth()->user()->hasRole('Bendahara'))
                             <li class="nav-item">
+                                <a class="nav-link" href="{{ route('reports.index') }}">{{ __('Reports') }}</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('bills.index') }}">{{ __('Bills') }}</a>
                             </li>
                             @endif

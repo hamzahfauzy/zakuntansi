@@ -41,7 +41,10 @@
                             </span>
 
                              <div class="float-right">
-                                <a href="javascript:void(0)" class="btn btn-primary btn-sm float-right"  data-placement="left" data-toggle="modal" data-target="#exampleModal">
+                                <a href="{{route('payments.import')}}" class="btn btn-success btn-sm"> Import</a>
+                                <a href="{{route('payments.export')}}" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-print"></i> Export</a>
+
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm"  data-placement="left" data-toggle="modal" data-target="#exampleModal">
                                   {{ __('Create New') }}
                                 </a>
                               </div>

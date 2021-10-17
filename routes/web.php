@@ -34,14 +34,22 @@ Route::middleware('installed')->group(function(){
         });
 
         Route::middleware('role:Bendahara')->group(function(){
+            Route::match(['get','post'],'bills/import',[App\Http\Controllers\BillController::class,'import'])->name("bills.import");
+            Route::get('bills/export',[App\Http\Controllers\BillController::class,'export'])->name("bills.export");
             Route::resource('bills',App\Http\Controllers\BillController::class);
+
+            Route::group(['prefix'=>'reports','as'=>'reports.'],function(){
+                Route::get('',[App\Http\Controllers\ReportController::class,'index'])->name('index');
+            });
+
         });
 
         Route::middleware('role:Kasir')->group(function(){
             Route::get('payments/cetak/{user}/{date}',[App\Http\Controllers\PaymentController::class,'cetak'])->name("payments.cetak");
+            Route::match(['get','post'],'payments/import',[App\Http\Controllers\PaymentController::class,'import'])->name("payments.import");
+            Route::get('payments/export',[App\Http\Controllers\PaymentController::class,'export'])->name("payments.export");
             Route::resource('payments',App\Http\Controllers\PaymentController::class);
         });
-        
 
         Route::middleware('role:Master')->group(function(){
             Route::get('/home/count-transaction/{transaction_code}/{month}', [App\Http\Controllers\HomeController::class, 'count_transaction'])->name('count_transaction');
