@@ -20,7 +20,7 @@ class ReportController extends Controller
         if(isset($_GET)){
             extract($_GET);
 
-            if($type == "Pembayaran"){
+            if(isset($_GET['type']) && $type == "Pembayaran"){
 
                 $model = new Payment();
 
