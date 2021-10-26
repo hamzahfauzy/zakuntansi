@@ -80,7 +80,7 @@
 											<td>{{ $payment->bill->merchant->name.' '.$payment->bill->year }}</td>
 											<td>{{ $payment->user->name.' - '.$payment->user->email }}</td>
 											<td>{{ $payment->staff->name }}</td>
-											<td>{{ $payment->total }}</td>
+											<td>{{ $payment->total_formatted }}</td>
 											<td>{{ $payment->created_at }}</td>
 
                                             <td>

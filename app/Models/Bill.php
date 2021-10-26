@@ -42,6 +42,11 @@ class Bill extends Model
      */
     protected $fillable = ['user_id','merchant_id','year','total','due_date','status'];
 
+    public function getBillNameAttribute()
+    {
+        return $this->merchant->name . ' - ' . $this->year;
+    }
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

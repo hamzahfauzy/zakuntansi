@@ -195,7 +195,7 @@ class PaymentController extends Controller
     public function create()
     {
         $user = User::findOrFail($_GET['user_id']);
-        $bills = $user->bills()->whereIn('status',['BELUM DIBAYAR','BELUM LUNAS'])->get()->pluck('merchant.name','id');
+        $bills = $user->bills()->whereIn('status',['BELUM DIBAYAR','BELUM LUNAS'])->get()->pluck('bill_name','id');
         $payment = new Payment();
         $payment->user_id = $_GET['user_id'];
         return view('payment.create', compact('payment','bills'));
