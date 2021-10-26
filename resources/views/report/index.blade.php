@@ -34,6 +34,13 @@
                                         <option value="{{$i}}" {{isset($_GET['year']) ? $_GET['year'] == $i ? 'selected' : '' : ''}}>{{$i}}</option>
                                     @endfor
                                 </select>
+                                <select name="user_id" class="form-control mr-2">
+                                    <option value="">- Pilih -</option>
+                                    @foreach($users as $id => $user)
+                                    <option value="{{$id}}" {{isset($_GET['user_id']) ? $_GET['user_id'] == $id ? 'selected' : '' : ''}}>{{$user}}</option>
+                                    @endforeach
+                                </select>
+                                
                                 <button class="btn btn-success mr-2">Filter</button>
                                 <button type="button" id="btn-print" class="btn btn-primary">Cetak</button>
                             </form>
@@ -65,18 +72,27 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @php($total=0)
                                             @foreach ($model as $payment)
+                                                @php($total+=$payment->total)
                                                 <tr>
                                                     <td>{{ ++$i }}</td>
                                                     
                                                     <td>{{ $payment->bill->merchant->name.' '.$payment->bill->year }}</td>
                                                     <td>{{ $payment->user->name.' - '.$payment->user->email }}</td>
                                                     <td>{{ $payment->staff->name }}</td>
-                                                    <td>{{ $payment->total }}</td>
+                                                    <td>{{ $payment->total_formatted }}</td>
                                                     <td>{{ $payment->created_at }}</td>
                                                 </tr>
 
                                             @endforeach
+                                            <tr>
+                                                <td></td>
+                                                
+                                                <td colspan="3">Total</td>
+                                                <td>{{ number_format($total) }}</td>
+                                                <td></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -100,7 +116,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @php($total=0)
+                                        @php($sisa=0)
                                         @foreach ($model as $bill)
+                                            @php($total+=$bill->total)
+                                            @php($sisa+=$bill->sisa)
                                             <tr>
                                                 <td>{{ ++$i }}</td>
                                                 
@@ -108,11 +128,20 @@
                                                 <td>{{ $bill->merchant->name }}</td>
                                                 <td>{{ $bill->year }}</td>
                                                 <td>{{ $bill->total_formatted }}</td>
-                                                <td>{{ $bill->sisa }}</td>
+                                                <td>{{ $bill->sisa_formatted }}</td>
                                                 <td>{{ $bill->due_date }}</td>
                                                 <td>{!! $bill->status_label !!}</td>
                                             </tr>
                                         @endforeach
+                                        <tr>
+                                            <td></td>
+                                            
+                                            <td colspan="3">Total</td>
+                                            <td>{{ number_format($total) }}</td>
+                                            <td>{{ number_format($sisa) }}</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>

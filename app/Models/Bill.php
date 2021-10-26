@@ -71,7 +71,12 @@ class Bill extends Model
     
     public function getSisaAttribute()
     {
-        return number_format($this->total - $this->payments->sum('total'));
+        return $this->total - $this->payments->sum('total');
+    }
+
+    public function getSisaFormattedAttribute()
+    {
+        return number_format($this->sisa);
     }
 
     public function getTotalFormattedAttribute()

@@ -16,6 +16,7 @@ class ReportController extends Controller
         $model = null;
 
         $merchants = Merchant::get();
+        $users = User::get()->pluck('name','id');
 
         if(isset($_GET)){
             extract($_GET);
@@ -24,7 +25,7 @@ class ReportController extends Controller
 
                 $model = new Payment();
 
-                if(isset($merchant) && isset($year)){
+                if(isset($merchant) && !empty($merchant) && isset($year) && !empty($year)){
                     
                     $bill = new Bill();
 
@@ -41,11 +42,18 @@ class ReportController extends Controller
                     }
                     
                 }
+
+                if(isset($user_id) && !empty($user_id))
+                {
+                    $model = $model->where('user_id',$user_id);
+                }
+
                 $model = $model->get();
+                
             }else{
                 $model = new Bill();
 
-                if(isset($merchant) && isset($year)){
+                if(isset($merchant) && !empty($merchant) && isset($year) && !empty($year)){
 
                     if($merchant){
                         $model = $model->where('merchant_id',$merchant);
@@ -57,12 +65,17 @@ class ReportController extends Controller
                     
                 }
 
+                if(isset($user_id) && !empty($user_id))
+                {
+                    $model = $model->where('user_id',$user_id);
+                }
+
                 $model = $model->get();
             }
 
-            return view('report.index', compact('model','merchants'));
+            return view('report.index', compact('model','merchants','users'));
         }
 
-        return view('report.index', compact('model','merchants'));
+        return view('report.index', compact('model','merchants','users'));
     }
 }
