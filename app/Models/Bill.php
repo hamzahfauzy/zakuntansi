@@ -68,6 +68,13 @@ class Bill extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function getSumPaymentAttribute(){
+        return $this->payments->sum('total');
+    }
+
+    public function getSumPaymentFormattedAttribute(){
+        return number_format($this->sum_payment);
+    }
     
     public function getSisaAttribute()
     {

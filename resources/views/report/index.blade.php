@@ -73,10 +73,10 @@
                                         </thead>
                                         <tbody>
                                             @php($total=0)
-                                            @foreach ($model as $payment)
+                                            @foreach ($model as $key => $payment)
                                                 @php($total+=$payment->total)
                                                 <tr>
-                                                    <td>{{ ++$i }}</td>
+                                                    <td>{{ ++$key }}</td>
                                                     
                                                     <td>{{ $payment->bill->merchant->name.' '.$payment->bill->year }}</td>
                                                     <td>{{ $payment->user->name.' - '.$payment->user->email }}</td>
@@ -110,6 +110,7 @@
                                             <th>Merchant</th>
                                             <th>Tahun</th>
                                             <th>Total</th>
+                                            <th>Bayar</th>
                                             <th>Sisa</th>
                                             <th>Jatuh Tempo</th>
                                             <th>Status</th>
@@ -118,16 +119,22 @@
                                     <tbody>
                                         @php($total=0)
                                         @php($sisa=0)
-                                        @foreach ($model as $bill)
+                                        @php($bayar=0)
+                                        @foreach ($model as $key => $bill)
+                                            @if($bill->sisa == 0)
+                                                @continue
+                                            @endif
                                             @php($total+=$bill->total)
                                             @php($sisa+=$bill->sisa)
+                                            @php($bayar+=$bill->sum_payment)
                                             <tr>
-                                                <td>{{ ++$i }}</td>
+                                                <td>{{ ++$key }}</td>
                                                 
                                                 <td>{{ $bill->user->name }}</td>
                                                 <td>{{ $bill->merchant->name }}</td>
                                                 <td>{{ $bill->year }}</td>
                                                 <td>{{ $bill->total_formatted }}</td>
+                                                <td>{{ $bill->sum_payment_formatted }}</td>
                                                 <td>{{ $bill->sisa_formatted }}</td>
                                                 <td>{{ $bill->due_date }}</td>
                                                 <td>{!! $bill->status_label !!}</td>
@@ -138,6 +145,7 @@
                                             
                                             <td colspan="3">Total</td>
                                             <td>{{ number_format($total) }}</td>
+                                            <td>{{ number_format($bayar) }}</td>
                                             <td>{{ number_format($sisa) }}</td>
                                             <td></td>
                                             <td></td>

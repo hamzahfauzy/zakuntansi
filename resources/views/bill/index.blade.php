@@ -59,7 +59,7 @@
 											<td>{{ $bill->merchant->name }}</td>
 											<td>{{ $bill->year }}</td>
 											<td>{{ $bill->total_formatted }}</td>
-											<td>{{ $bill->sisa }}</td>
+											<td>{{ $bill->sisa_formatted }}</td>
 											<td>{{ $bill->due_date }}</td>
 											<td>{!! $bill->status_label !!}</td>
 

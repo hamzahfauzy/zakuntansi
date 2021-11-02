@@ -25,15 +25,15 @@ class ReportController extends Controller
 
                 $model = new Payment();
 
-                if(isset($merchant) && !empty($merchant) && isset($year) && !empty($year)){
+                if(isset($merchant) && isset($year)){
                     
                     $bill = new Bill();
 
-                    if($merchant){
+                    if(!empty($merchant)){
                         $bill = $bill->where('merchant_id',$merchant);
                     }
 
-                    if($year){
+                    if(!empty($year)){
                         $bill = $bill->where('year',$year);
                     }
 
@@ -53,13 +53,13 @@ class ReportController extends Controller
             }else{
                 $model = new Bill();
 
-                if(isset($merchant) && !empty($merchant) && isset($year) && !empty($year)){
+                if(isset($merchant) && isset($year)){
 
-                    if($merchant){
+                    if(!empty($merchant)){
                         $model = $model->where('merchant_id',$merchant);
                     }
 
-                    if($year){
+                    if(!empty($year)){
                         $model = $model->where('year',$year);
                     }
                     
