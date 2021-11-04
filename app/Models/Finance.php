@@ -27,10 +27,9 @@ class Finance extends Model
 {
     
     static $rules = [
-		'transaction_id' => 'required',
+		// 'transaction_id' => 'required',
 		'category_id' => 'required',
-		'user_id' => 'required',
-		'staff_id' => 'required',
+		// 'staff_id' => 'required',
 		'total' => 'required',
     ];
 
@@ -41,7 +40,7 @@ class Finance extends Model
      *
      * @var array
      */
-    protected $fillable = ['transaction_id','category_id','user_id','staff_id','total'];
+    protected $fillable = ['transaction_id','category_id','user_id','staff_id','total','payment_id'];
 
 
     /**
@@ -74,6 +73,19 @@ class Finance extends Model
     public function user()
     {
         return $this->hasOne('App\Models\User', 'id', 'user_id');
+    }
+
+    public function getTotalFormattedAttribute()
+    {
+        return number_format($this->total);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function payment()
+    {
+        return $this->hasOne('App\Models\Payment', 'id', 'payment_id');
     }
     
 

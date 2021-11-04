@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Finance;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class FinanceController
@@ -19,8 +21,17 @@ class FinanceController extends Controller
     public function index()
     {
         $finances = Finance::paginate();
+        $categories = Category::get();
+        $kas = 0;
+        foreach($categories as $category)
+        {
+            if($category->status == 'Pemasukan')
+                $kas += $category->finances()->sum('total');
+            else
+                $kas -= $category->finances()->sum('total');
+        }
 
-        return view('finance.index', compact('finances'))
+        return view('finance.index', compact('finances','kas'))
             ->with('i', (request()->input('page', 1) - 1) * $finances->perPage());
     }
 
@@ -32,7 +43,8 @@ class FinanceController extends Controller
     public function create()
     {
         $finance = new Finance();
-        return view('finance.create', compact('finance'));
+        $categories = Category::select(DB::Raw('CONCAT(name," - ",status) as cat_name'),'id')->get()->pluck('cat_name','id');
+        return view('finance.create', compact('finance','categories'));
     }
 
     /**
@@ -44,7 +56,7 @@ class FinanceController extends Controller
     public function store(Request $request)
     {
         request()->validate(Finance::$rules);
-
+        $request['staff_id'] = auth()->user()->id;
         $finance = Finance::create($request->all());
 
         return redirect()->route('finances.index')
@@ -73,8 +85,9 @@ class FinanceController extends Controller
     public function edit($id)
     {
         $finance = Finance::find($id);
+        $categories = Category::select(DB::Raw('CONCAT(name," - ",status) as cat_name'),'id')->get()->pluck('cat_name','id');
 
-        return view('finance.edit', compact('finance'));
+        return view('finance.edit', compact('finance','categories'));
     }
 
     /**
@@ -101,7 +114,10 @@ class FinanceController extends Controller
      */
     public function destroy($id)
     {
-        $finance = Finance::find($id)->delete();
+        $finance = Finance::find($id);
+        if($finance->payment_id)
+            $finance->payment->delete();
+        $finance->delete();
 
         return redirect()->route('finances.index')
             ->with('success', 'Finance deleted successfully');

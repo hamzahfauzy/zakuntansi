@@ -37,6 +37,7 @@ Route::middleware('installed')->group(function(){
             Route::match(['get','post'],'bills/import',[App\Http\Controllers\BillController::class,'import'])->name("bills.import");
             Route::get('bills/export',[App\Http\Controllers\BillController::class,'export'])->name("bills.export");
             Route::resource('bills',App\Http\Controllers\BillController::class);
+            Route::resource('finances',App\Http\Controllers\FinanceController::class);
 
             Route::group(['prefix'=>'reports','as'=>'reports.'],function(){
                 Route::get('',[App\Http\Controllers\ReportController::class,'index'])->name('index');

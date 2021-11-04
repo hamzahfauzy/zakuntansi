@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bill;
 use App\Models\User;
+use App\Models\Finance;
 use App\Models\Payment;
 use App\Models\Student;
 use App\Models\Merchant;
@@ -231,6 +232,18 @@ class PaymentController extends Controller
                 'bill_id'=>$p['bill_id'],
                 'total'=>$p['total'],
             ]);
+
+            if($payment)
+            {
+                $category = $bill->merchant->category_id;
+                Finance::create([
+                    'staff_id'=>$request->staff_id,
+                    'user_id'=>$request->user_id,
+                    'payment_id'=>$payment->id,
+                    'category_id'=>$category,
+                    'total'=>$p['total'],
+                ]);
+            }
         }
 
         return redirect()->route('payments.index')

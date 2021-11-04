@@ -42,6 +42,7 @@
 										<th>Nama</th>
 										<th>Merchant</th>
 										<th>Tahun</th>
+										<th>Termin</th>
 										<th>Total</th>
 										<th>Sisa</th>
 										<th>Jatuh Tempo</th>
@@ -58,6 +59,7 @@
 											<td>{{ $bill->user->name }}</td>
 											<td>{{ $bill->merchant->name }}</td>
 											<td>{{ $bill->year }}</td>
+											<td>{{ $bill->termin }}</td>
 											<td>{{ $bill->total_formatted }}</td>
 											<td>{{ $bill->sisa_formatted }}</td>
 											<td>{{ $bill->due_date }}</td>

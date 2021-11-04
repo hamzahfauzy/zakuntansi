@@ -111,6 +111,17 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('reports.index') }}">{{ __('Reports') }}</a>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    Transaksi Lainnya
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{route('finances.index')}}">Kas dan Jurnal</a>
+                                    <a class="dropdown-item" href="{{route('finances.index',['category'=>'Pemasukan'])}}">Transaksi Pemasukan</a>
+                                    <a class="dropdown-item" href="{{route('finances.index',['category'=>'Keluaran'])}}">Transaksi Keluaran</a>
+                                </div>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('bills.index') }}">{{ __('Bills') }}</a>
                             </li>

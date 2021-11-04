@@ -31,34 +31,42 @@
 
                     <div class="card-body">
                         <div class="table-responsive">
+                            <h2>Jumlah Kas Anda : {{number_format($kas)}}</h2>
                             <table class="table table-striped table-hover">
                                 <thead class="thead">
                                     <tr>
                                         <th>No</th>
-                                        
-										<th>Transaction Id</th>
-										<th>Category Id</th>
-										<th>User Id</th>
-										<th>Staff Id</th>
+										<th>Category</th>
+										<th>Staff</th>
 										<th>Total</th>
+                                        @if(!isset($_GET['category']))
+										<th>Saldo</th>
+                                        @endif
 
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php($saldo=0)
                                     @foreach ($finances as $finance)
+                                        @if(isset($_GET['category']) && !empty($_GET['category']) && ($_GET['category'] != $finance->category->status))
+                                        @continue
+                                        @endif
+                                        <?php 
+                                            $saldo = $finance->category->status == 'Pemasukan' ? $saldo + $finance->total : $saldo - $finance->total; 
+                                        ?>
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             
-											<td>{{ $finance->transaction_id }}</td>
-											<td>{{ $finance->category_id }}</td>
-											<td>{{ $finance->user_id }}</td>
-											<td>{{ $finance->staff_id }}</td>
-											<td>{{ $finance->total }}</td>
+											<td>{{ $finance->category->name }} - {{ $finance->category->status }}</td>
+											<td>{{ $finance->staff->name }}</td>
+											<td>{{ $finance->total_formatted }}</td>
+                                            @if(!isset($_GET['category']))
+											<td>{{ number_format($saldo) }}</td>
+                                            @endif
 
                                             <td>
                                                 <form action="{{ route('finances.destroy',$finance->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-primary " href="{{ route('finances.show',$finance->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a>
                                                     <a class="btn btn-sm btn-success" href="{{ route('finances.edit',$finance->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')

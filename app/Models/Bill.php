@@ -31,6 +31,7 @@ class Bill extends Model
 		'year' => 'required',
 		'total' => 'required',
 		'due_date' => 'required',
+		'jumlah_termin' => 'required',
     ];
 
     protected $perPage = 20;
@@ -40,7 +41,7 @@ class Bill extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id','merchant_id','year','total','due_date','status'];
+    protected $fillable = ['user_id','merchant_id','year','total','due_date','status','termin'];
 
     public function getBillNameAttribute()
     {

@@ -215,12 +215,19 @@ class BillController extends Controller
         request()->validate(Bill::$rules);
 
         // $bill = Bill::create($request->all());
+        $total = $request->total / $request->jumlah_termin;
 
         foreach($request->user_id as $user_id)
         {
             $data = $request->all();
-            $data['user_id'] = $user_id;
-            Bill::create($data);
+
+            for($i=1;$i<=$request->jumlah_termin;$i++)
+            {
+                $data['user_id'] = $user_id;
+                $data['termin']  = $i;
+                $data['total']  = $total;
+                Bill::create($data);
+            }
         }
 
         return redirect()->route('bills.index')

@@ -42,6 +42,19 @@
             {{ Form::number('due_date', $bill->due_date, ['class' => 'form-control' . ($errors->has('due_date') ? ' is-invalid' : ''), 'placeholder' => 'Due Date']) }}
             {!! $errors->first('due_date', '<div class="invalid-feedback">:message</p>') !!}
         </div>
+        @if($bill->termin)
+        <div class="form-group">
+            {{ Form::label('termin') }}
+            {{ Form::number('termin', $bill->termin, ['class' => 'form-control' . ($errors->has('termin') ? ' is-invalid' : ''), 'placeholder' => 'Termin']) }}
+            {!! $errors->first('termin', '<div class="invalid-feedback">:message</p>') !!}
+        </div>
+        @else
+        <div class="form-group">
+            {{ Form::label('jumlah termin') }}
+            {{ Form::number('jumlah_termin', 1, ['class' => 'form-control' . ($errors->has('jumlah_termin') ? ' is-invalid' : ''), 'placeholder' => 'Jumlah Termin']) }}
+            {!! $errors->first('jumlah_termin', '<div class="invalid-feedback">:message</p>') !!}
+        </div>
+        @endif
 
     </div>
     <div class="box-footer mt20">
