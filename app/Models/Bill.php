@@ -45,7 +45,7 @@ class Bill extends Model
 
     public function getBillNameAttribute()
     {
-        return $this->merchant->name . ' - ' . $this->year;
+        return $this->merchant->name . ' - ' . $this->year . ' - Termin ' .$this->termin;
     }
 
 
