@@ -3,18 +3,25 @@
         <input type="hidden" name="user_id" value="{{$payment->user_id}}">
         
         <div class="row">
-            <div class="col-6">
+            <div class="col-4">
                 <div class="form-group">
                     {{ Form::label('tagihan') }}
                     {{ Form::select('payment[0][bill_id]', $bills, $payment->bill_id, ['class' => 'form-control select2' . ($errors->has('bill_id') ? ' is-invalid' : ''), 'placeholder'=>'Pilih','required'=>true]) }}
                     {!! $errors->first('bill_id', '<div class="invalid-feedback">:message</p>') !!}
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-4">
                 <div class="form-group">
                     {{ Form::label('total') }}
                     {{ Form::text('payment[0][total]', $payment->total, ['class' => 'form-control' . ($errors->has('total') ? ' is-invalid' : ''), 'placeholder' => 'Total','required'=>true]) }}
                     {!! $errors->first('total', '<div class="invalid-feedback">:message</p>') !!}
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    {{ Form::label('tanggal') }}
+                    {{ Form::date('payment[0][created_at]', $payment->created_at ?? date('Y-m-d'), ['class' => 'form-control' . ($errors->has('created_at') ? ' is-invalid' : ''), 'placeholder' => 'Tanggal','required'=>true]) }}
+                    {!! $errors->first('created_at', '<div class="invalid-feedback">:message</p>') !!}
                 </div>
             </div>
         </div>
@@ -32,18 +39,25 @@
         var rows = $("#form-body .row").get()
 
         var html = `<div class="row">
-            <div class="col-6">
+            <div class="col-4">
                 <div class="form-group">
                     {{ Form::label('tagihan') }}
                     {{ Form::select('payment[${rows.length}][bill_id]', $bills, $payment->bill_id, ['class' => 'form-control select2' . ($errors->has('bill_id') ? ' is-invalid' : ''), 'placeholder'=>'Pilih','required'=>true]) }}
                     {!! $errors->first('bill_id', '<div class="invalid-feedback">:message</p>') !!}
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-4">
                 <div class="form-group">
                     {{ Form::label('total') }}
                     {{ Form::text('payment[${rows.length}][total]', $payment->total, ['class' => 'form-control' . ($errors->has('total') ? ' is-invalid' : ''), 'placeholder' => 'Total','required'=>true]) }}
                     {!! $errors->first('total', '<div class="invalid-feedback">:message</p>') !!}
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    {{ Form::label('tanggal') }}
+                    {{ Form::date('payment[${rows.length}][created_at]', $payment->created_at ?? date('Y-m-d'), ['class' => 'form-control' . ($errors->has('total') ? ' is-invalid' : ''), 'placeholder' => 'Tanggal','required'=>true]) }}
+                    {!! $errors->first('created_at', '<div class="invalid-feedback">:message</p>') !!}
                 </div>
             </div>
         </div>`

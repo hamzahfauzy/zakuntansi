@@ -231,6 +231,7 @@ class PaymentController extends Controller
                 'user_id'=>$request->user_id,
                 'bill_id'=>$p['bill_id'],
                 'total'=>$p['total'],
+                'created_at' => $p['created_at'] . ' ' . date('H:i:s')
             ]);
 
             if($payment)
@@ -242,6 +243,7 @@ class PaymentController extends Controller
                     'payment_id'=>$payment->id,
                     'category_id'=>$category,
                     'total'=>$p['total'],
+                    'created_at' => $p['created_at'] . ' ' . date('H:i:s')
                 ]);
             }
         }
