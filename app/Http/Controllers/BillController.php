@@ -216,6 +216,7 @@ class BillController extends Controller
 
         // $bill = Bill::create($request->all());
         $total = $request->total / $request->jumlah_termin;
+        $total = ceil($total);
 
         foreach($request->user_id as $user_id)
         {
