@@ -68,6 +68,9 @@ class StudentController extends Controller
                     
                     if ($name == '' || $nik == '' || $no == '') break;
 
+                    $user = User::where('email',$nik)->exists();
+                    if($user) continue;
+
                     $user = User::create([
                         'name' => $name,
                         'email' => $nik,
