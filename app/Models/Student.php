@@ -24,6 +24,7 @@ class Student extends Model
     static $rules = [
 		'NIS' => 'required',
 		'name' => 'required',
+		'phone' => 'required',
     ];
 
     protected $perPage = 20;
@@ -33,7 +34,7 @@ class Student extends Model
      *
      * @var array
      */
-    protected $fillable = ['NIS','name','user_id'];
+    protected $fillable = ['NIS','name','user_id','phone'];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
