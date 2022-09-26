@@ -11,6 +11,11 @@
             {{ Form::text('name', $student->name, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'placeholder' => 'Name']) }}
             {!! $errors->first('name', '<div class="invalid-feedback">:message</p>') !!}
         </div>
+        <div class="form-group">
+            {{ Form::label(__('Study Group')) }}
+            {{ Form::select('group_id', $studyGroups, $student->group_id, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : '')]) }}
+            {!! $errors->first('group_id', '<div class="invalid-feedback">:message</p>') !!}
+        </div>
 
     </div>
     <div class="box-footer mt20">

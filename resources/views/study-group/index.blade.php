@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-    Student
+    Rombongan Belajar
 @endsection
 
 @section('content')
@@ -13,17 +13,11 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                {{ __('Student') }}
+                                {{ __('Study Group') }}
                             </span>
 
-                            <div class="float-right">
-                                <a href="{{ asset("format/format-siswa.xlsx") }}" class="btn btn-warning btn-sm" >
-                                  {{ __('Format Import') }}
-                                </a>
-                                <a href="{{ route('students.import') }}" class="btn btn-success btn-sm" >
-                                  {{ __('Import') }}
-                                </a>
-                                <a href="{{ route('students.create') }}" class="btn btn-primary btn-sm">
+                             <div class="float-right">
+                                <a href="{{ route('study-groups.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
                                   {{ __('Create New') }}
                                 </a>
                               </div>
@@ -42,25 +36,24 @@
                                     <tr>
                                         <th>No</th>
                                         
-										<th>Nis</th>
 										<th>Name</th>
-										<th>Group</th>
+										<th>Level</th>
 
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($students as $student)
+                                    @foreach ($studyGroups as $studyGroup)
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             
-											<td>{{ $student->NIS }}</td>
-											<td>{{ $student->name }}</td>
-											<td>{{ $student->studyGroup->name }}</td>
+											<td>{{ $studyGroup->name }}</td>
+											<td>{{ $studyGroup->level }}</td>
 
                                             <td>
-                                                <form action="{{ route('students.destroy',$student->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-success" href="{{ route('students.edit',$student->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
+                                                <form action="{{ route('study-groups.destroy',$studyGroup->id) }}" method="POST">
+                                                    <a class="btn btn-sm btn-primary " href="{{ route('study-groups.show',$studyGroup->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a>
+                                                    <a class="btn btn-sm btn-success" href="{{ route('study-groups.edit',$studyGroup->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Delete</button>
@@ -73,7 +66,7 @@
                         </div>
                     </div>
                 </div>
-                {!! $students->links() !!}
+                {!! $studyGroups->links() !!}
             </div>
         </div>
     </div>
