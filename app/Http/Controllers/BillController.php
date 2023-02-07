@@ -26,7 +26,14 @@ class BillController extends Controller
      */
     public function index()
     {
-        $bills = Bill::paginate();
+        $bills = new Bill;
+
+        if(isset($_GET['status']))
+        {
+            $bills = $bills->where('status',$_GET['status']);
+        }
+
+        $bills = $bills->paginate();
 
         return view('bill.index', compact('bills'))
             ->with('i', (request()->input('page', 1) - 1) * $bills->perPage());

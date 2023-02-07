@@ -10,11 +10,12 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-
+                        <div>
                             <span id="card_title">
                                 {{ __('Reports') }}
                             </span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <form class="form-inline">
                                 <select name="type" class="form-control mr-2">
@@ -30,16 +31,12 @@
                                 </select>
                                 <select name="year" class="form-control mr-2">
                                     <option value="">- Pilih Tahun -</option>
-                                    @for($i=2000;$i<=2021;$i++)
+                                    @for($i=2000;$i<=2027;$i++)
                                         <option value="{{$i}}" {{isset($_GET['year']) ? $_GET['year'] == $i ? 'selected' : '' : ''}}>{{$i}}</option>
                                     @endfor
                                 </select>
-                                <select name="user_id" class="form-control mr-2">
-                                    <option value="">- Pilih -</option>
-                                    @foreach($users as $id => $user)
-                                    <option value="{{$id}}" {{isset($_GET['user_id']) ? $_GET['user_id'] == $id ? 'selected' : '' : ''}}>{{$user}}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="name" class="form-control mr-2" value="{{isset($_GET['name']) ? $_GET['name'] : ''}}" placeholder="Nama">
+                                <input type="text" name="NIS" class="form-control mr-2" value="{{isset($_GET['NIS']) ? $_GET['NIS'] : ''}}" placeholder="NIS">
                                 
                                 <button class="btn btn-success mr-2">Filter</button>
                                 <button type="button" id="btn-print" class="btn btn-primary">Cetak</button>
@@ -65,6 +62,7 @@
                                                 <th>No</th>
                                                 
                                                 <th>Tagihan</th>
+                                                <th>NIS</th>
                                                 <th>Nama</th>
                                                 <th>Staff</th>
                                                 <th>Total</th>
@@ -79,6 +77,7 @@
                                                     <td>{{ ++$key }}</td>
                                                     
                                                     <td>{{ $payment->bill->merchant->name.' '.$payment->bill->year }}</td>
+                                                    <td>{{ $payment->user->student->NIS }}</td>
                                                     <td>{{ $payment->user->name.' - '.$payment->user->email }}</td>
                                                     <td>{{ $payment->staff->name }}</td>
                                                     <td>{{ $payment->total_formatted }}</td>
@@ -106,6 +105,7 @@
                                         <tr>
                                             <th>No</th>
                                             
+                                            <th>NIS</th>
                                             <th>Nama</th>
                                             <th>Merchant</th>
                                             <th>Tahun</th>
@@ -130,6 +130,7 @@
                                             <tr>
                                                 <td>{{ ++$key }}</td>
                                                 
+                                                <td>{{ $bill->user->student->NIS }}</td>
                                                 <td>{{ $bill->user->name }}</td>
                                                 <td>{{ $bill->merchant->name }}</td>
                                                 <td>{{ $bill->year }}</td>

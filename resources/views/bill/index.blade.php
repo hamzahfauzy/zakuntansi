@@ -17,6 +17,8 @@
                             </span>
 
                             <div>
+                                <a href="{{route('bills.index',['status' => 'LUNAS'])}}" class="btn btn-success btn-sm"> Tampilkan Data Lunas</a>
+                                <a href="{{route('bills.index',['status' => 'BELUM LUNAS'])}}" class="btn btn-success btn-sm"> Tampilkan Data Belum Lunas</a>
                                 <a href="{{route('bills.import')}}" class="btn btn-success btn-sm"> Import</a>
                                 <a href="{{route('bills.export')}}" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-print"></i> Export</a>
 
@@ -26,6 +28,7 @@
                             </div>
                         </div>
                     </div>
+
                     @if ($message = Session::get('success'))
                         <div class="alert alert-success">
                             <p>{{ $message }}</p>

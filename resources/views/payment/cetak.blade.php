@@ -39,7 +39,7 @@
 <body>
 
 <div style="text-align:center">
-    <img src="{{asset('storage/'.auth()->user()->installation->logo)}}" width="75" alt="Logo">
+    <img src="{{asset('storage/'.auth()->user()->installation->logo)}}" width="300px" alt="Logo">
     <hr>
 </div>
 
