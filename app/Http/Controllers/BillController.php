@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Student;
 use App\Models\Category;
 use App\Models\Merchant;
+use App\Services\Whatsapp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -297,5 +298,28 @@ class BillController extends Controller
 
         return redirect()->route('bills.index')
             ->with('success', 'Bill deleted successfully');
+    }
+
+    public function notif($id)
+    {
+        $bill = Bill::find($id);
+        if(env('WA_APIKEY'))
+        {
+            if($bill->user->student->phone)
+            {
+                // send wa
+                $message = "Hallo, tagihan anda untuk merchant ".$bill->merchant->name." tersisa ".$bill->sisa_formatted.". Mohon segera lakukan pelunasan.\n\nTerima kasih.";
+                (new Whatsapp)->send($bill->user->student->phone, $message);
+    
+                return redirect()->route('bills.index')
+                ->with('success', 'Tagihan berhasil dikirim');
+            }
+
+            return redirect()->route('bills.index')
+                ->with('fail', 'Tagihan gagal dikirim. Siswa tidak memiliki nomor WA');
+        }
+
+        return redirect()->route('bills.index')
+                ->with('fail', 'Tagihan gagal dikirim. Tidak ada API KEY');
     }
 }
