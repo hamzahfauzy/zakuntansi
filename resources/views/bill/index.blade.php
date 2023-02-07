@@ -34,6 +34,12 @@
                             <p>{{ $message }}</p>
                         </div>
                     @endif
+                    
+                    @if ($message = Session::get('fail'))
+                        <div class="alert alert-danger">
+                            <p>{{ $message }}</p>
+                        </div>
+                    @endif
 
                     <div class="card-body">
                         <div class="table-responsive">
@@ -68,8 +74,11 @@
 											<td>{{ $bill->due_date }}</td>
 											<td>{!! $bill->status_label !!}</td>
 
-                                            <td>
+                                            <td style="white-space:nowrap">
                                                 <form action="{{ route('bills.destroy',$bill->id) }}" method="POST">
+                                                    @if($bill->status == 'BELUM LUNAS')
+                                                    <a href="{{route('bills.notif', $bill->id)}}" class="btn btn-sm btn-success">Kirim Tagihan</a>
+                                                    @endif
                                                     <a class="btn btn-sm btn-success" href="{{ route('bills.edit',$bill->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')
