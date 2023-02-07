@@ -12,9 +12,9 @@
             {!! $errors->first('name', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label(__('Study Group')) }}
-            {{ Form::select('group_id', $studyGroups, $student->group_id, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : '')]) }}
-            {!! $errors->first('group_id', '<div class="invalid-feedback">:message</p>') !!}
+            {{ Form::label('phone') }}
+            {{ Form::text('phone', $student->phone, ['class' => 'form-control' . ($errors->has('phone') ? ' is-invalid' : ''), 'placeholder' => 'phone']) }}
+            {!! $errors->first('phone', '<div class="invalid-feedback">:message</p>') !!}
         </div>
 
     </div>
