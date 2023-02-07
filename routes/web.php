@@ -27,6 +27,7 @@ Route::middleware('installed')->group(function(){
         Route::middleware('role:Operator')->group(function(){
             Route::resource('categories',App\Http\Controllers\CategoryController::class);
             Route::resource('merchants',App\Http\Controllers\MerchantController::class);
+            Route::resource('study-groups',App\Http\Controllers\StudyGroupController::class);
             Route::match(['get','post'],"students/import",[App\Http\Controllers\StudentController::class,'import'])->name("students.import");
             Route::resource('students',App\Http\Controllers\StudentController::class);
             Route::match(['get','post'],"teachers/import",[App\Http\Controllers\TeacherController::class,'import'])->name("teachers.import");

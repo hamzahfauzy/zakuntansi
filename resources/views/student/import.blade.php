@@ -21,8 +21,16 @@
 
                             <div class="box box-info padding-1">
                                 <div class="box-body">
+                                    <div class="form-group">
+                                        <label for="">File Import</label>
+                                        <input type="file" name="import" class="form-control">
+                                    </div>
 
-                                    <input type="file" name="import" class="form-control">
+                                    <div class="form-group">
+                                        {{ Form::label(__('Study Group')) }}
+                                        {{ Form::select('group_id', $studyGroups, 0, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : '')]) }}
+                                        {!! $errors->first('group_id', '<div class="invalid-feedback">:message</p>') !!}
+                                    </div>
 
                                 </div>
                                 <div class="box-footer mt-3">

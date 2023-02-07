@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Student;
+use App\Models\StudyGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -35,7 +36,8 @@ class StudentController extends Controller
     public function create()
     {
         $student = new Student();
-        return view('student.create', compact('student'));
+        $studyGroups = StudyGroup::get()->pluck('name','id');
+        return view('student.create', compact('student','studyGroups'));
     }
 
     public function import(Request $request)
@@ -81,6 +83,7 @@ class StudentController extends Controller
                         'user_id'=>$user->id,
                         'name' => $name,
                         'NIS' => $nik,
+                        'group_id' => $request->group_id,
                     ];
 
                     Student::create($arr);
@@ -102,7 +105,9 @@ class StudentController extends Controller
             return redirect()->route('students.index')->with($status);
         }
 
-        return view('student.import');
+        $studyGroups = StudyGroup::get()->pluck('name','id');
+
+        return view('student.import', compact('studyGroups'));
     }
 
     /**
@@ -154,8 +159,9 @@ class StudentController extends Controller
     public function edit($id)
     {
         $student = Student::find($id);
+        $studyGroups = StudyGroup::get()->pluck('name','id');
 
-        return view('student.edit', compact('student'));
+        return view('student.edit', compact('student','studyGroups'));
     }
 
     /**

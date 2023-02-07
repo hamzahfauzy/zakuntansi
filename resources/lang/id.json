@@ -33,5 +33,7 @@
     "Bill"     : "Tagihan",
     "Teacher"  : "Guru / Pegawai",
     "Student"  : "Siswa",
-    "Generate Bills"     : "Generate Tagihan"
+    "Generate Bills"     : "Generate Tagihan",
+
+    "Study Group" : "Rombongan Belajar"
 }

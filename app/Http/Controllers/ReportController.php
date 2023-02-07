@@ -36,8 +36,8 @@ class ReportController extends Controller
                         $bill = $bill->where('year',$year);
                     }
 
-                    if($bill = $bill->first()){
-                        $model = $model->where('bill_id',$bill->id);
+                    if($bill = $bill->get()->pluck('id')){
+                        $model = $model->whereIn('bill_id',$bill);
                     }
                     
                 }
