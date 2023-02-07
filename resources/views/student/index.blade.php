@@ -44,6 +44,7 @@
                                         
 										<th>Nis</th>
 										<th>Name</th>
+										<th>Group</th>
 
                                         <th></th>
                                     </tr>
@@ -55,10 +56,10 @@
                                             
 											<td>{{ $student->NIS }}</td>
 											<td>{{ $student->name }}</td>
+											<td>{{ $student->studyGroup->name }}</td>
 
                                             <td>
                                                 <form action="{{ route('students.destroy',$student->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-primary " href="{{ route('students.show',$student->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a>
                                                     <a class="btn btn-sm btn-success" href="{{ route('students.edit',$student->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')

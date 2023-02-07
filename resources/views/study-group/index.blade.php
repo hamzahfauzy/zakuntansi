@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-    Bill
+    Rombongan Belajar
 @endsection
 
 @section('content')
@@ -13,22 +13,16 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                {{ __('Bill') }}
+                                {{ __('Study Group') }}
                             </span>
 
-                            <div>
-                                <a href="{{route('bills.index',['status' => 'LUNAS'])}}" class="btn btn-success btn-sm"> Tampilkan Data Lunas</a>
-                                <a href="{{route('bills.index',['status' => 'BELUM LUNAS'])}}" class="btn btn-success btn-sm"> Tampilkan Data Belum Lunas</a>
-                                <a href="{{route('bills.import')}}" class="btn btn-success btn-sm"> Import</a>
-                                <a href="{{route('bills.export')}}" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-print"></i> Export</a>
-
-                                <a href="{{ route('bills.create') }}" class="btn btn-primary btn-sm">
-                                    {{ __('Create New') }}
+                             <div class="float-right">
+                                <a href="{{ route('study-groups.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
+                                  {{ __('Create New') }}
                                 </a>
-                            </div>
+                              </div>
                         </div>
                     </div>
-
                     @if ($message = Session::get('success'))
                         <div class="alert alert-success">
                             <p>{{ $message }}</p>
@@ -42,35 +36,24 @@
                                     <tr>
                                         <th>No</th>
                                         
-										<th>Nama</th>
-										<th>Merchant</th>
-										<th>Tahun</th>
-										<th>Termin</th>
-										<th>Total</th>
-										<th>Sisa</th>
-										<th>Jatuh Tempo</th>
-										<th>Status</th>
+										<th>Name</th>
+										<th>Level</th>
 
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($bills as $bill)
+                                    @foreach ($studyGroups as $studyGroup)
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             
-											<td>{{ $bill->user->name }}</td>
-											<td>{{ $bill->merchant->name }}</td>
-											<td>{{ $bill->year }}</td>
-											<td>{{ $bill->termin }}</td>
-											<td>{{ $bill->total_formatted }}</td>
-											<td>{{ $bill->sisa_formatted }}</td>
-											<td>{{ $bill->due_date }}</td>
-											<td>{!! $bill->status_label !!}</td>
+											<td>{{ $studyGroup->name }}</td>
+											<td>{{ $studyGroup->level }}</td>
 
                                             <td>
-                                                <form action="{{ route('bills.destroy',$bill->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-success" href="{{ route('bills.edit',$bill->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
+                                                <form action="{{ route('study-groups.destroy',$studyGroup->id) }}" method="POST">
+                                                    <a class="btn btn-sm btn-primary " href="{{ route('study-groups.show',$studyGroup->id) }}"><i class="fa fa-fw fa-eye"></i> Show</a>
+                                                    <a class="btn btn-sm btn-success" href="{{ route('study-groups.edit',$studyGroup->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> Delete</button>
@@ -83,7 +66,7 @@
                         </div>
                     </div>
                 </div>
-                {!! $bills->links() !!}
+                {!! $studyGroups->links() !!}
             </div>
         </div>
     </div>

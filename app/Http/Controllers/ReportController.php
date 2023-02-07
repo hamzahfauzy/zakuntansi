@@ -16,7 +16,6 @@ class ReportController extends Controller
         $model = null;
 
         $merchants = Merchant::get();
-        $users = User::get()->pluck('name','id');
 
         if(isset($_GET)){
             extract($_GET);
@@ -43,9 +42,18 @@ class ReportController extends Controller
                     
                 }
 
-                if(isset($user_id) && !empty($user_id))
+                if(isset($name) && !empty($name))
                 {
-                    $model = $model->where('user_id',$user_id);
+                    $model = $model->whereHas('user', function($query) use ($name){
+                        return $query->where('name','LIKE','%'.$name.'%');
+                    });
+                }
+
+                if(isset($NIS) && !empty($NIS))
+                {
+                    $model = $model->whereHas('user.student', function($query) use ($NIS){
+                        return $query->where('NIS','LIKE','%'.$NIS.'%');
+                    });
                 }
 
                 $model = $model->get();
@@ -65,17 +73,26 @@ class ReportController extends Controller
                     
                 }
 
-                if(isset($user_id) && !empty($user_id))
+                if(isset($name) && !empty($name))
                 {
-                    $model = $model->where('user_id',$user_id);
+                    $model = $model->whereHas('user', function($query) use ($name){
+                        return $query->where('name','LIKE','%'.$name.'%');
+                    });
+                }
+
+                if(isset($NIS) && !empty($NIS))
+                {
+                    $model = $model->whereHas('user.student', function($query) use ($NIS){
+                        return $query->where('NIS','LIKE','%'.$NIS.'%');
+                    });
                 }
 
                 $model = $model->get();
             }
 
-            return view('report.index', compact('model','merchants','users'));
+            return view('report.index', compact('model','merchants'));
         }
 
-        return view('report.index', compact('model','merchants','users'));
+        return view('report.index', compact('model','merchants'));
     }
 }

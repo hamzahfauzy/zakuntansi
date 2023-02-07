@@ -43,6 +43,15 @@ class Student extends Model
     {
         return $this->hasMany('App\Models\StudentMeta', 'student_id', 'id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function studyGroup()
+    {
+        return $this->hasOne('App\Models\StudyGroup', 'id', 'group_id');
+    }
+    
     
 
 }
