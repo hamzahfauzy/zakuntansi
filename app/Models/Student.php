@@ -34,7 +34,7 @@ class Student extends Model
      *
      * @var array
      */
-    protected $fillable = ['NIS','name','user_id','phone'];
+    protected $fillable = ['NIS','name','user_id','phone','account_number','account_holder'];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
