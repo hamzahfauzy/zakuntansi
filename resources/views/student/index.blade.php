@@ -45,6 +45,8 @@
 										<th>Nis</th>
 										<th>Name</th>
 										<th>Phone</th>
+										<th>Account Number</th>
+										<th>Account Holder</th>
 
                                         <th></th>
                                     </tr>
@@ -57,6 +59,8 @@
 											<td>{{ $student->NIS }}</td>
 											<td>{{ $student->name }}</td>
 											<td>{{ $student->phone }}</td>
+											<td>{{ $student->account_number }}</td>
+											<td>{{ $student->account_holder }}</td>
 
                                             <td>
                                                 <form action="{{ route('students.destroy',$student->id) }}" method="POST">
