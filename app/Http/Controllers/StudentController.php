@@ -67,6 +67,9 @@ class StudentController extends Controller
                     $no = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
                     $nik = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
                     $name = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                    $phone = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+                    $account_number = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
+                    $account_holder = $worksheet->getCellByColumnAndRow(6, $row)->getValue();
                     
                     if ($name == '' || $nik == '' || $no == '') break;
 
@@ -77,6 +80,9 @@ class StudentController extends Controller
                         'name' => $name,
                         'email' => $nik,
                         'password' => $nik,
+                        'phone' => $phone,
+                        'account_number' => $account_number,
+                        'account_holder' => $account_holder,
                     ]);
 
                     $role = Role::where('name','Siswa')->first();

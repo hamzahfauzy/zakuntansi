@@ -16,6 +16,16 @@
             {{ Form::text('phone', $student->phone, ['class' => 'form-control' . ($errors->has('phone') ? ' is-invalid' : ''), 'placeholder' => 'phone']) }}
             {!! $errors->first('phone', '<div class="invalid-feedback">:message</p>') !!}
         </div>
+        <div class="form-group">
+            {{ Form::label('Account Number') }}
+            {{ Form::text('account_number', $student->account_number, ['class' => 'form-control' . ($errors->has('account_number') ? ' is-invalid' : ''), 'placeholder' => 'No rekening']) }}
+            {!! $errors->first('account_number', '<div class="invalid-feedback">:message</p>') !!}
+        </div>
+        <div class="form-group">
+            {{ Form::label('Account Holder') }}
+            {{ Form::text('account_holder', $student->account_holder, ['class' => 'form-control' . ($errors->has('account_holder') ? ' is-invalid' : ''), 'placeholder' => 'Pemegang rekening']) }}
+            {!! $errors->first('account_holder', '<div class="invalid-feedback">:message</p>') !!}
+        </div>
 
     </div>
     <div class="box-footer mt20">
