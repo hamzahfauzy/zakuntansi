@@ -44,7 +44,7 @@
                                         
 										<th>Nis</th>
 										<th>Name</th>
-										<th>Group</th>
+										<th>Phone</th>
 
                                         <th></th>
                                     </tr>
@@ -56,7 +56,7 @@
                                             
 											<td>{{ $student->NIS }}</td>
 											<td>{{ $student->name }}</td>
-											<td>{{ $student->studyGroup->name }}</td>
+											<td>{{ $student->phone }}</td>
 
                                             <td>
                                                 <form action="{{ route('students.destroy',$student->id) }}" method="POST">
