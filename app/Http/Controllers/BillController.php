@@ -41,7 +41,7 @@ class BillController extends Controller
     }
 
     function export(){
-        $bills = Bill::where('status','BELUM LUNAS')->get();
+        $bills = Bill::where('status','BELUM LUNAS')->whereHas('user.student')->get();
 
         /** Create a new Spreadsheet Object **/
         $spreadsheet = new Spreadsheet(); 
