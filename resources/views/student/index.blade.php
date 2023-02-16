@@ -42,11 +42,12 @@
                                     <tr>
                                         <th>No</th>
                                         
-										<th>Nis</th>
-										<th>Name</th>
-										<th>Phone</th>
-										<th>Account Number</th>
-										<th>Account Holder</th>
+										<th>NIS</th>
+										<th>Nama</th>
+										<th>No HP</th>
+										<th>Rombel</th>
+										<th>No Rekening</th>
+										<th>Pemegang Rekening</th>
 
                                         <th></th>
                                     </tr>
@@ -59,6 +60,7 @@
 											<td>{{ $student->NIS }}</td>
 											<td>{{ $student->name }}</td>
 											<td>{{ $student->phone }}</td>
+											<td>{{ $student->studyGroup?$student->studyGroup->name:'' }}</td>
 											<td>{{ $student->account_number }}</td>
 											<td>{{ $student->account_holder }}</td>
 

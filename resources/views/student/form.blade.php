@@ -7,22 +7,27 @@
             {!! $errors->first('NIS', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('name') }}
+            {{ Form::label('nama') }}
             {{ Form::text('name', $student->name, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'placeholder' => 'Name']) }}
             {!! $errors->first('name', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('phone') }}
+            {{ Form::label('no hp') }}
             {{ Form::text('phone', $student->phone, ['class' => 'form-control' . ($errors->has('phone') ? ' is-invalid' : ''), 'placeholder' => 'phone']) }}
             {!! $errors->first('phone', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('Account Number') }}
+            {{ Form::label('Rombongan Belajar') }}
+            {{ Form::select('study_group_id', $studyGroups, $student->study_group_id, ['class' => 'form-control' . ($errors->has('study_group_id') ? ' is-invalid' : ''), 'placeholder' => 'Rombel']) }}
+            {!! $errors->first('study_group_id', '<div class="invalid-feedback">:message</p>') !!}
+        </div>
+        <div class="form-group">
+            {{ Form::label('No Rekening') }}
             {{ Form::text('account_number', $student->account_number, ['class' => 'form-control' . ($errors->has('account_number') ? ' is-invalid' : ''), 'placeholder' => 'No rekening']) }}
             {!! $errors->first('account_number', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('Account Holder') }}
+            {{ Form::label('Pemegang Rekening') }}
             {{ Form::text('account_holder', $student->account_holder, ['class' => 'form-control' . ($errors->has('account_holder') ? ' is-invalid' : ''), 'placeholder' => 'Pemegang rekening']) }}
             {!! $errors->first('account_holder', '<div class="invalid-feedback">:message</p>') !!}
         </div>

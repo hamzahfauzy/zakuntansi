@@ -36,7 +36,7 @@
                                     <tr>
                                         <th>No</th>
                                         
-										<th>Name</th>
+										<th>Nama</th>
 										<th>Level</th>
 
                                         <th></th>
