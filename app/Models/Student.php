@@ -25,6 +25,9 @@ class Student extends Model
 		'NIS' => 'required',
 		'name' => 'required',
 		'phone' => 'required',
+		'study_group_id' => 'required',
+		'account_number' => 'required',
+		'account_holder' => 'required',
     ];
 
     protected $perPage = 20;
@@ -34,7 +37,7 @@ class Student extends Model
      *
      * @var array
      */
-    protected $fillable = ['NIS','name','user_id','phone','account_number','account_holder'];
+    protected $fillable = ['NIS','name','user_id','phone','study_group_id','account_number','account_holder'];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

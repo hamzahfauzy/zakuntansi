@@ -41,14 +41,14 @@ class BillController extends Controller
     }
 
     function export(){
-        $bills = Bill::get();
+        $bills = Bill::where('status','BELUM LUNAS')->get();
 
         /** Create a new Spreadsheet Object **/
         $spreadsheet = new Spreadsheet(); 
 
         $sheet = $spreadsheet->getActiveSheet();
 
-        $column_header=["No","Email","Nama","Merchant","Tahun","Total","Jatuh Tempo","Status"];
+        $column_header=["No","Kelas","Nama Siswa","Nama","Nama Lengkap","No Rekening","Merchant","Total"];
         foreach($column_header as $key => $x_value) {
             $sheet->setCellValueByColumnAndRow($key+1,1,$x_value);   
         }
@@ -56,16 +56,19 @@ class BillController extends Controller
         //set value row
 
         foreach($bills as $key => $value){
-
+            $student = $value->user->student;
             $nis = $value->user->email;
+            $kelas = $student->studyGroup?$student->studyGroup->name:'';
             $name = $value->user->name;
+            $account_number = $student->account_number;
+            $account_holder = $student->account_holder;
             $merchant = $value->merchant->name;
             $year = $value->year;
             $total = $value->total;
             $due_date = $value->due_date;
             $status = $value->status;
 
-            $new = [$key+1,$nis,$name,$merchant,$year,$total,$due_date,$status];
+            $new = [$key+1,$kelas,$name,$account_holder,$account_holder.' '.$name,$account_number,$merchant,$total];
 
             foreach($new as $x => $x_value) {
                 $sheet->setCellValueByColumnAndRow($x+1,$key+2,$x_value);
