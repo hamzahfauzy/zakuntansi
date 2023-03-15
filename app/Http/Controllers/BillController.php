@@ -48,7 +48,7 @@ class BillController extends Controller
 
         $sheet = $spreadsheet->getActiveSheet();
 
-        $column_header=["No","Kelas","Nama Siswa","Nama","Nama Lengkap","No Rekening","Merchant","Total"];
+        $column_header=["No","NIS","Kelas","Nama Siswa","Pemegang Rekening","No Rekening","Merchant","Total"];
         foreach($column_header as $key => $x_value) {
             $sheet->setCellValueByColumnAndRow($key+1,1,$x_value);   
         }
@@ -68,7 +68,7 @@ class BillController extends Controller
             $due_date = $value->due_date;
             $status = $value->status;
 
-            $new = [$key+1,$kelas,$name,$account_holder,$account_holder.' '.$name,$account_number,$merchant,$total];
+            $new = [$key+1,$nis,$kelas,$name,$account_holder,$account_number,$merchant,$total];
 
             foreach($new as $x => $x_value) {
                 $sheet->setCellValueByColumnAndRow($x+1,$key+2,$x_value);
