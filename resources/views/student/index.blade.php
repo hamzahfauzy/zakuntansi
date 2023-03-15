@@ -23,6 +23,9 @@
                                 <a href="{{ route('students.import') }}" class="btn btn-success btn-sm" >
                                   {{ __('Import') }}
                                 </a>
+                                <a href="{{ route('students.export') }}" class="btn btn-success btn-sm" >
+                                  {{ __('Export') }}
+                                </a>
                                 <a href="{{ route('students.create') }}" class="btn btn-primary btn-sm">
                                   {{ __('Create New') }}
                                 </a>
