@@ -143,7 +143,7 @@ class StudentController extends Controller
 
         $sheet = $spreadsheet->getActiveSheet();
 
-        $column_header=["No","Kelas","Nama Siswa","Nama Pemegang Rekening","No Rekening"];
+        $column_header=["No","NIS","Kelas","Nama Siswa","Nama Pemegang Rekening","No Rekening"];
         foreach($column_header as $key => $x_value) {
             $sheet->setCellValueByColumnAndRow($key+1,1,$x_value);   
         }
@@ -157,7 +157,7 @@ class StudentController extends Controller
             $account_number = $student->account_number;
             $account_holder = $student->account_holder;
 
-            $new = [$key+1,$kelas,$name,$account_holder,$account_number];
+            $new = [$key+1,$nis,$kelas,$name,$account_holder,$account_number];
 
             foreach($new as $x => $x_value) {
                 $sheet->setCellValueByColumnAndRow($x+1,$key+2,$x_value);
