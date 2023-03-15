@@ -74,15 +74,25 @@ class StudentController extends Controller
                     if ($name == '' || $nik == '' || $no == '') break;
 
                     $user = User::where('email',$nik)->exists();
-                    if($user) continue;
+                    if($user)
+                    {
+                        $user = User::where('email',$nik)->first();
+                        $user->student->update([
+                            'name' => $name,
+                            'NIS' => $nik,
+                            'group_id' => $request->group_id,
+                            'phone' => $phone,
+                            'account_number' => $account_number,
+                            'account_holder' => $account_holder,
+                        ]);
+                        // edit data
+                        continue;
+                    }
 
                     $user = User::create([
                         'name' => $name,
                         'email' => $nik,
-                        'password' => $nik,
-                        'phone' => $phone,
-                        'account_number' => $account_number,
-                        'account_holder' => $account_holder,
+                        'password' => $nik
                     ]);
 
                     $role = Role::where('name','Siswa')->first();
@@ -93,6 +103,9 @@ class StudentController extends Controller
                         'name' => $name,
                         'NIS' => $nik,
                         'group_id' => $request->group_id,
+                        'phone' => $phone,
+                        'account_number' => $account_number,
+                        'account_holder' => $account_holder,
                     ];
 
                     Student::create($arr);
