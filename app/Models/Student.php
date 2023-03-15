@@ -25,7 +25,7 @@ class Student extends Model
 		'NIS' => 'required',
 		'name' => 'required',
 		'phone' => 'required',
-		'study_group_id' => 'required',
+		'group_id' => 'required',
 		'account_number' => 'required',
 		'account_holder' => 'required',
     ];
