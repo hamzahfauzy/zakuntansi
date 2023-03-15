@@ -132,6 +132,48 @@ class StudentController extends Controller
         return view('student.import', compact('studyGroups'));
     }
 
+    public function export()
+    {
+        $students = Student::get();
+
+        /** Create a new Spreadsheet Object **/
+        $spreadsheet = new Spreadsheet(); 
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $column_header=["No","Kelas","Nama Siswa","Nama Pemegang Rekening","No Rekening"];
+        foreach($column_header as $key => $x_value) {
+            $sheet->setCellValueByColumnAndRow($key+1,1,$x_value);   
+        }
+        
+        //set value row
+
+        foreach($students as $key => $student){
+            $nis = $student->NIS;
+            $kelas = $student->studyGroup?$student->studyGroup->name:'';
+            $name = $student->name;
+            $account_number = $student->account_number;
+            $account_holder = $student->account_holder;
+
+            $new = [$key+1,$kelas,$name,$account_holder,$account_number];
+
+            foreach($new as $x => $x_value) {
+                $sheet->setCellValueByColumnAndRow($x+1,$key+2,$x_value);
+            }
+        }
+
+        $date = date('Y-m-d-H-i-s');
+        $filename = "Export_Data_Siswa_".$date.".xlsx";
+
+        $writer = new Xlsx($spreadsheet); 
+        $writer->save("files/".$filename);
+        
+        $content = file_get_contents("files/".$filename);
+        header("Content-Disposition: attachment; filename=".$filename);
+
+        return $content;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
