@@ -18,8 +18,8 @@
         </div>
         <div class="form-group">
             {{ Form::label('Rombongan Belajar') }}
-            {{ Form::select('study_group_id', $studyGroups, $student->study_group_id, ['class' => 'form-control' . ($errors->has('study_group_id') ? ' is-invalid' : ''), 'placeholder' => 'Rombel']) }}
-            {!! $errors->first('study_group_id', '<div class="invalid-feedback">:message</p>') !!}
+            {{ Form::select('group_id', $studyGroups, $student->group_id, ['class' => 'form-control' . ($errors->has('group_id') ? ' is-invalid' : ''), 'placeholder' => 'Rombel']) }}
+            {!! $errors->first('group_id', '<div class="invalid-feedback">:message</p>') !!}
         </div>
         <div class="form-group">
             {{ Form::label('No Rekening') }}
